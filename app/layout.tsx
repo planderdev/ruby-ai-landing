@@ -1,14 +1,42 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000";
+
+const title = "루비AI — 글로벌 체험단 마케팅 플랫폼";
+const description =
+  "루비AI는 글로벌 인플루언서·체험단을 AI로 매칭하는 마케팅 플랫폼입니다. 캠페인 등록부터 선정·콘텐츠 발행까지 한 곳에서.";
+
 export const metadata: Metadata = {
-  title: "루비AI — 글로벌 체험단 마케팅 플랫폼",
-  description:
-    "루비AI는 글로벌 인플루언서·체험단을 AI로 매칭하는 마케팅 플랫폼입니다. 캠페인 등록부터 선정·콘텐츠 발행까지 한 곳에서.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
   openGraph: {
-    title: "루비AI — 글로벌 체험단 마케팅 플랫폼",
-    description: "글로벌 인플루언서를 AI로 매칭하는 마케팅 플랫폼",
+    title,
+    description,
     type: "website",
+    siteName: "루비AI",
+    locale: "ko_KR",
+    url: "/",
+    images: [
+      {
+        url: "/og.png",
+        width: 1280,
+        height: 720,
+        alt: "Ruby AI — 글로벌 체험단 마케팅 플랫폼",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og.png"],
   },
 };
 
