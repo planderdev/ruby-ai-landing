@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Pretendard Variable";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/woff2/PretendardVariable.woff2") format("woff2-variations");
+}
+
+:root {
+  --font-pretendard: "Pretendard Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: "Pretendard Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* Mono palette — light (default) */
+  --background: 250 250 250;          /* near-white #FAFAFA */
+  --foreground: 12 12 14;             /* near-black #0C0C0E */
+  --muted: 240 240 243;               /* light gray card bg */
+  --muted-foreground: 110 112 122;    /* dim text */
+  --border: 226 228 234;              /* hairline */
+
+  /* Pink accent */
+  --accent: 236 72 153;               /* primary pink */
+  --accent-soft: 252 231 243;         /* soft pink bg */
+  --accent-ink: 131 24 67;            /* deep pink for hover */
+
+  color-scheme: light;
+}
+
+.dark {
+  /* Mono palette — dark */
+  --background: 10 10 12;             /* near-black #0A0A0C */
+  --foreground: 245 245 247;          /* off-white #F5F5F7 */
+  --muted: 22 22 27;                  /* dark card bg */
+  --muted-foreground: 156 160 172;    /* mid-gray text */
+  --border: 38 38 46;                 /* hairline */
+
+  /* Pink accent — slightly lifted for dark backgrounds */
+  --accent: 244 114 182;              /* lighter pink #F472B6 */
+  --accent-soft: 61 23 41;            /* deep wine for soft bg */
+  --accent-ink: 251 168 208;          /* very light pink ink */
+
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: var(--font-pretendard);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+}
+
+/* Subtle grid background utility (sentient-style) */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(var(--border) / 0.6) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--border) / 0.6) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-grid-mask {
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 75%);
+}
+
+/* Hairline divider */
+.hairline {
+  border-color: rgb(var(--border));
+}
+
+/* Display text — tight tracking */
+.display {
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+}
+
+/* Pink shimmer underline for emphasis */
+.pink-underline {
+  background-image: linear-gradient(120deg, rgb(var(--accent)) 0%, rgb(var(--accent)) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 0.18em;
+  background-position: 0 88%;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgb(var(--border)); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted-foreground) / 0.4); }
