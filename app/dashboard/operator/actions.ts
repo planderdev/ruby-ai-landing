@@ -1,0 +1,76 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+
+async function ensureOperator() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false as const, error: "로그인이 필요합니다.", supabase, user: null };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  if (profile?.role !== "operator") {
+    return { ok: false as const, error: "권한이 없습니다.", supabase, user };
+  }
+  return { ok: true as const, supabase, user };
+}
+
+export async function approveUser(
+  profileId: string,
+  decision: "approve" | "reject"
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const guard = await ensureOperator();
+  if (!guard.ok) return { ok: false, error: guard.error };
+
+  if (decision === "approve") {
+    const { error } = await guard.supabase
+      .from("profiles")
+      .update({
+        approved: true,
+        approved_at: new Date().toISOString(),
+        approved_by: guard.user.id,
+      })
+      .eq("id", profileId);
+    if (error) return { ok: false, error: error.message };
+  } else {
+    // For reject, we just leave them unapproved. In real product we'd flag/email them.
+    const { error } = await guard.supabase
+      .from("profiles")
+      .update({ approved: false })
+      .eq("id", profileId);
+    if (error) return { ok: false, error: error.message };
+  }
+
+  revalidatePath("/dashboard/operator/users");
+  revalidatePath("/dashboard");
+  return { ok: true };
+}
+
+export async function decideCampaign(
+  campaignId: string,
+  decision: "open" | "rejected"
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const guard = await ensureOperator();
+  if (!guard.ok) return { ok: false, error: guard.error };
+
+  const status = decision === "open" ? "open" : "cancelled";
+  const { error } = await guard.supabase
+    .from("campaigns")
+    .update({
+      status,
+      approved_at: new Date().toISOString(),
+      approved_by: guard.user.id,
+    })
+    .eq("id", campaignId);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath("/dashboard/operator/campaigns");
+  revalidatePath(`/dashboard/campaigns/${campaignId}`);
+  return { ok: true };
+}
