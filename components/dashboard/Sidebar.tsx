@@ -11,6 +11,7 @@ import {
   Star,
 } from "lucide-react";
 import type { UserRole } from "@/lib/supabase/queries";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type NavItem = { href: string; label: string; icon: React.ComponentType<{ className?: string }> };
 
@@ -40,15 +41,18 @@ export function Sidebar({ role, name }: { role: UserRole; name: string }) {
   const items = itemsByRole[role];
   return (
     <aside className="hidden w-60 shrink-0 border-r border-border bg-background lg:flex lg:flex-col">
-      <Link href="/" className="flex h-16 items-center px-6">
-        <Image
-          src="/logo.png"
-          alt="루비AI"
-          width={510}
-          height={160}
-          className="h-6 w-auto invert dark:invert-0"
-        />
-      </Link>
+      <div className="flex h-16 items-center justify-between px-6">
+        <Link href="/" aria-label="루비AI 홈">
+          <Image
+            src="/logo.png"
+            alt="루비AI"
+            width={510}
+            height={160}
+            className="h-6 w-auto invert dark:invert-0"
+          />
+        </Link>
+        <ThemeToggle />
+      </div>
 
       <div className="flex flex-col gap-1 px-3 py-4">
         {items.map((it) => (

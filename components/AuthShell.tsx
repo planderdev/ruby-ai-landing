@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AuthShell({
   children,
@@ -14,15 +15,18 @@ export function AuthShell({
     <main className="relative flex min-h-dvh">
       {/* left: form */}
       <section className="flex flex-1 flex-col px-6 py-10 md:px-16 lg:px-24">
-        <Link href="/" className="inline-flex items-center" aria-label="루비AI 홈">
-          <Image
-            src="/logo.png"
-            alt="루비AI"
-            width={510}
-            height={160}
-            className="h-7 w-auto invert dark:invert-0"
-          />
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="inline-flex items-center" aria-label="루비AI 홈">
+            <Image
+              src="/logo.png"
+              alt="루비AI"
+              width={510}
+              height={160}
+              className="h-7 w-auto invert dark:invert-0"
+            />
+          </Link>
+          <ThemeToggle />
+        </div>
 
         <div className="my-auto w-full max-w-md py-12">
           <h1 className="display text-3xl font-semibold lg:text-4xl">{title}</h1>
