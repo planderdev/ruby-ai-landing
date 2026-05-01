@@ -8,9 +8,19 @@ const AUTH_ONLY_PUBLIC = ["/login", "/signup"];
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // If env vars are missing, skip auth and let the request through.
+  // (Pages that need Supabase will surface a clearer error than a 500
+  // from middleware, and the landing page still renders.)
+  if (!url || !anon) {
+    return supabaseResponse;
+  }
+
   const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anon,
     {
       cookies: {
         getAll() {
