@@ -1,0 +1,564 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
+  public: {
+    Tables: {
+      advertisers: {
+        Row: {
+          business_address: string | null
+          business_number: string | null
+          business_type: Database["public"]["Enums"]["business_type"] | null
+          company_name: string
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          profile_id: string
+          representative_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_address?: string | null
+          business_number?: string | null
+          business_type?: Database["public"]["Enums"]["business_type"] | null
+          company_name: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          profile_id: string
+          representative_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_address?: string | null
+          business_number?: string | null
+          business_type?: Database["public"]["Enums"]["business_type"] | null
+          company_name?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          profile_id?: string
+          representative_name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advertisers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      applications: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          id: string
+          influencer_id: string
+          message: string | null
+          selected_at: string | null
+          selected_by: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          id?: string
+          influencer_id: string
+          message?: string | null
+          selected_at?: string | null
+          selected_by?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          influencer_id?: string
+          message?: string | null
+          selected_at?: string | null
+          selected_by?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      campaign_channels: {
+        Row: { campaign_id: string; channel_type_id: string }
+        Insert: { campaign_id: string; channel_type_id: string }
+        Update: { campaign_id?: string; channel_type_id?: string }
+        Relationships: []
+      }
+      campaign_keywords: {
+        Row: { campaign_id: string; id: string; keyword: string }
+        Insert: { campaign_id: string; id?: string; keyword: string }
+        Update: { campaign_id?: string; id?: string; keyword?: string }
+        Relationships: []
+      }
+      campaign_missions: {
+        Row: {
+          campaign_id: string
+          channel_type_id: string
+          description: string
+          id: string
+          required: boolean
+        }
+        Insert: {
+          campaign_id: string
+          channel_type_id: string
+          description: string
+          id?: string
+          required?: boolean
+        }
+        Update: {
+          campaign_id?: string
+          channel_type_id?: string
+          description?: string
+          id?: string
+          required?: boolean
+        }
+        Relationships: []
+      }
+      campaign_offerings: {
+        Row: {
+          campaign_id: string
+          description: string | null
+          estimated_value: number | null
+          id: string
+          title: string
+        }
+        Insert: {
+          campaign_id: string
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          title: string
+        }
+        Update: {
+          campaign_id?: string
+          description?: string | null
+          estimated_value?: number | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      campaign_schedules: {
+        Row: {
+          campaign_id: string
+          day_of_week: number | null
+          end_time: string | null
+          id: string
+          start_time: string | null
+        }
+        Insert: {
+          campaign_id: string
+          day_of_week?: number | null
+          end_time?: string | null
+          id?: string
+          start_time?: string | null
+        }
+        Update: {
+          campaign_id?: string
+          day_of_week?: number | null
+          end_time?: string | null
+          id?: string
+          start_time?: string | null
+        }
+        Relationships: []
+      }
+      campaigns: {
+        Row: {
+          advertiser_id: string
+          always_open: boolean
+          approved_at: string | null
+          approved_by: string | null
+          business_name: string
+          category_id: string
+          contact_phone: string | null
+          created_at: string
+          experience_end: string | null
+          experience_start: string | null
+          id: string
+          point_amount: number
+          promotion_type_id: string
+          recruit_count: number
+          recruit_end: string
+          recruit_start: string
+          region_id: string
+          same_day_reservation: boolean
+          status: Database["public"]["Enums"]["campaign_status"]
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          advertiser_id: string
+          always_open?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          business_name: string
+          category_id: string
+          contact_phone?: string | null
+          created_at?: string
+          experience_end?: string | null
+          experience_start?: string | null
+          id?: string
+          point_amount?: number
+          promotion_type_id: string
+          recruit_count?: number
+          recruit_end: string
+          recruit_start: string
+          region_id: string
+          same_day_reservation?: boolean
+          status?: Database["public"]["Enums"]["campaign_status"]
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          advertiser_id?: string
+          always_open?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          business_name?: string
+          category_id?: string
+          contact_phone?: string | null
+          created_at?: string
+          experience_end?: string | null
+          experience_start?: string | null
+          id?: string
+          point_amount?: number
+          promotion_type_id?: string
+          recruit_count?: number
+          recruit_end?: string
+          recruit_start?: string
+          region_id?: string
+          same_day_reservation?: boolean
+          status?: Database["public"]["Enums"]["campaign_status"]
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          active: boolean
+          emoji: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          emoji?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          emoji?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      channel_types: {
+        Row: {
+          active: boolean
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      influencer_channels: {
+        Row: {
+          channel_type_id: string
+          created_at: string
+          followers: number
+          handle: string | null
+          id: string
+          influencer_id: string
+          updated_at: string
+          url: string
+          verified: boolean
+        }
+        Insert: {
+          channel_type_id: string
+          created_at?: string
+          followers?: number
+          handle?: string | null
+          id?: string
+          influencer_id: string
+          updated_at?: string
+          url: string
+          verified?: boolean
+        }
+        Update: {
+          channel_type_id?: string
+          created_at?: string
+          followers?: number
+          handle?: string | null
+          id?: string
+          influencer_id?: string
+          updated_at?: string
+          url?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
+      influencers: {
+        Row: {
+          bio: string | null
+          birth_year: number | null
+          created_at: string
+          gender: string | null
+          profile_id: string
+          region_id: string | null
+          total_points: number
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          birth_year?: number | null
+          created_at?: string
+          gender?: string | null
+          profile_id: string
+          region_id?: string | null
+          total_points?: number
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          birth_year?: number | null
+          created_at?: string
+          gender?: string | null
+          profile_id?: string
+          region_id?: string | null
+          total_points?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      plans: {
+        Row: {
+          applicant_view_limit: number | null
+          campaign_limit: number | null
+          created_at: string
+          features: Json
+          id: string
+          monthly_price: number
+          name: string
+          tier: Database["public"]["Enums"]["plan_tier"]
+        }
+        Insert: {
+          applicant_view_limit?: number | null
+          campaign_limit?: number | null
+          created_at?: string
+          features?: Json
+          id?: string
+          monthly_price?: number
+          name: string
+          tier: Database["public"]["Enums"]["plan_tier"]
+        }
+        Update: {
+          applicant_view_limit?: number | null
+          campaign_limit?: number | null
+          created_at?: string
+          features?: Json
+          id?: string
+          monthly_price?: number
+          name?: string
+          tier?: Database["public"]["Enums"]["plan_tier"]
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          approved: boolean
+          approved_at: string | null
+          approved_by: string | null
+          avatar_url: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+        }
+        Insert: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          id: string
+          name: string
+          phone?: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Update: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      promotion_types: {
+        Row: {
+          active: boolean
+          description: string | null
+          id: string
+          name: string
+          required_fields: string[]
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          description?: string | null
+          id?: string
+          name: string
+          required_fields?: string[]
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          description?: string | null
+          id?: string
+          name?: string
+          required_fields?: string[]
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      regions: {
+        Row: {
+          active: boolean
+          code: string
+          currency: string
+          flag: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          currency?: string
+          flag: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          currency?: string
+          flag?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          advertiser_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          plan_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+        }
+        Insert: {
+          advertiser_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_id: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+        }
+        Update: {
+          advertiser_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: { [_ in never]: never }
+    Functions: {
+      is_advertiser_owner: { Args: { advertiser_uuid: string }; Returns: boolean }
+      is_operator: { Args: never; Returns: boolean }
+    }
+    Enums: {
+      application_status: "pending" | "selected" | "rejected" | "cancelled" | "completed"
+      business_type: "individual" | "corporation"
+      campaign_status: "draft" | "pending_approval" | "open" | "closed" | "completed" | "cancelled"
+      plan_tier: "free" | "business" | "enterprise"
+      subscription_status: "active" | "cancelled" | "expired"
+      user_role: "advertiser" | "influencer" | "operator"
+    }
+    CompositeTypes: { [_ in never]: never }
+  }
+}

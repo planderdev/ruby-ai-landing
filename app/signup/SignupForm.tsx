@@ -1,0 +1,363 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { Building2, Sparkles, Loader2, MailCheck } from "lucide-react";
+
+type Role = "advertiser" | "influencer";
+
+type RegionOption = { id: string; code: string; name: string; flag: string };
+type ChannelOption = { id: string; slug: string; name: string };
+
+export function SignupForm({
+  regions,
+  channelTypes,
+}: {
+  regions: RegionOption[];
+  channelTypes: ChannelOption[];
+}) {
+  const router = useRouter();
+  const [role, setRole] = useState<Role>("advertiser");
+  const [step, setStep] = useState<"role" | "form" | "check_email">("role");
+
+  return (
+    <div>
+      {step === "role" && (
+        <RoleStep selected={role} onSelect={setRole} onNext={() => setStep("form")} />
+      )}
+      {step === "form" && (
+        <FormStep
+          role={role}
+          regions={regions}
+          channelTypes={channelTypes}
+          onBack={() => setStep("role")}
+          onSignedIn={() => router.push("/dashboard")}
+          onNeedConfirm={() => setStep("check_email")}
+        />
+      )}
+      {step === "check_email" && <CheckEmailStep />}
+    </div>
+  );
+}
+
+function RoleStep({
+  selected,
+  onSelect,
+  onNext,
+}: {
+  selected: Role;
+  onSelect: (r: Role) => void;
+  onNext: () => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <RoleCard
+        active={selected === "advertiser"}
+        onClick={() => onSelect("advertiser")}
+        icon={<Building2 className="size-5" />}
+        label="광고주 (브랜드)"
+        desc="제품·매장을 알리고 인플루언서를 모집합니다."
+      />
+      <RoleCard
+        active={selected === "influencer"}
+        onClick={() => onSelect("influencer")}
+        icon={<Sparkles className="size-5" />}
+        label="인플루언서 (크리에이터)"
+        desc="원하는 캠페인에 응모하고 체험 후 콘텐츠를 발행합니다."
+      />
+      <button
+        onClick={onNext}
+        className="mt-2 w-full rounded-full bg-foreground px-6 py-3.5 text-sm font-medium text-background"
+      >
+        다음으로
+      </button>
+    </div>
+  );
+}
+
+function RoleCard({
+  active,
+  onClick,
+  icon,
+  label,
+  desc,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  desc: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`group flex w-full items-start gap-4 rounded-2xl border px-5 py-4 text-left transition-colors ${
+        active ? "border-foreground bg-muted/60" : "border-border bg-background hover:bg-muted/40"
+      }`}
+    >
+      <span
+        className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
+          active ? "bg-foreground text-background" : "bg-muted text-foreground"
+        }`}
+      >
+        {icon}
+      </span>
+      <span className="flex-1">
+        <span className="block text-sm font-semibold">{label}</span>
+        <span className="mt-1 block text-xs text-muted-foreground">{desc}</span>
+      </span>
+      <span
+        className={`mt-1 size-4 shrink-0 rounded-full border ${
+          active ? "border-foreground bg-foreground" : "border-border"
+        }`}
+      />
+    </button>
+  );
+}
+
+function FormStep({
+  role,
+  regions,
+  channelTypes,
+  onBack,
+  onSignedIn,
+  onNeedConfirm,
+}: {
+  role: Role;
+  regions: RegionOption[];
+  channelTypes: ChannelOption[];
+  onBack: () => void;
+  onSignedIn: () => void;
+  onNeedConfirm: () => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const [companyName, setCompanyName] = useState("");
+  const [businessNumber, setBusinessNumber] = useState("");
+
+  const [regionId, setRegionId] = useState(regions[0]?.id ?? "");
+  const [channelTypeId, setChannelTypeId] = useState(channelTypes[0]?.id ?? "");
+  const [channelUrl, setChannelUrl] = useState("");
+
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const supabase = createClient();
+
+    // All metadata goes into raw_user_meta_data — DB trigger handles row creation
+    const metadata: Record<string, string> = {
+      role,
+      name,
+      phone,
+    };
+    if (role === "advertiser") {
+      metadata.company_name = companyName;
+      metadata.business_number = businessNumber;
+    } else {
+      metadata.region_id = regionId;
+      metadata.channel_type_id = channelTypeId;
+      metadata.channel_url = channelUrl;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: metadata },
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    if (data.session) {
+      onSignedIn();
+    } else {
+      // Email confirmation required
+      onNeedConfirm();
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          className="text-xs font-medium text-muted-foreground hover:text-foreground"
+        >
+          ← 역할 변경
+        </button>
+        <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
+          {role === "advertiser" ? "광고주" : "인플루언서"}
+        </span>
+      </div>
+
+      <Field label="이메일" type="email" value={email} onChange={setEmail} required />
+      <Field
+        label="비밀번호 (8자 이상)"
+        type="password"
+        value={password}
+        onChange={setPassword}
+        required
+        minLength={8}
+      />
+      <Field
+        label={role === "advertiser" ? "담당자 이름" : "이름·닉네임"}
+        type="text"
+        value={name}
+        onChange={setName}
+        required
+      />
+      <Field label="연락처 (선택)" type="tel" value={phone} onChange={setPhone} />
+
+      {role === "advertiser" ? (
+        <>
+          <Field
+            label="회사·상호명"
+            type="text"
+            value={companyName}
+            onChange={setCompanyName}
+            required
+          />
+          <Field
+            label="사업자등록번호 (선택)"
+            type="text"
+            value={businessNumber}
+            onChange={setBusinessNumber}
+          />
+        </>
+      ) : (
+        <>
+          <SelectField
+            label="활동 지역"
+            value={regionId}
+            onChange={setRegionId}
+            options={regions.map((r) => ({ value: r.id, label: `${r.flag} ${r.name}` }))}
+          />
+          <SelectField
+            label="대표 SNS 채널"
+            value={channelTypeId}
+            onChange={setChannelTypeId}
+            options={channelTypes.map((c) => ({ value: c.id, label: c.name }))}
+          />
+          <Field
+            label="채널 URL (선택)"
+            type="url"
+            value={channelUrl}
+            onChange={setChannelUrl}
+            placeholder="https://instagram.com/..."
+          />
+        </>
+      )}
+
+      {error && (
+        <div className="rounded-2xl border border-accent/30 bg-accent-soft px-4 py-3 text-sm text-accent-ink">
+          {error}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="flex w-full items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3.5 text-sm font-medium text-background transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
+      >
+        {loading && <Loader2 className="size-4 animate-spin" />}
+        가입하고 시작하기
+      </button>
+
+      {role === "influencer" && (
+        <p className="text-xs text-muted-foreground">
+          * 인플루언서 계정은 운영자 검수를 거쳐 승인됩니다 (평균 24시간 이내).
+        </p>
+      )}
+    </form>
+  );
+}
+
+function CheckEmailStep() {
+  return (
+    <div className="rounded-3xl border border-border bg-muted/40 p-8 text-center">
+      <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-accent-soft text-accent-ink">
+        <MailCheck className="size-6" />
+      </div>
+      <h3 className="mt-5 text-lg font-semibold">메일함을 확인해주세요</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        가입 확인 메일을 발송했어요. 메일 안의 링크를 눌러 인증을 완료하면 로그인할 수 있습니다.
+      </p>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  type,
+  value,
+  onChange,
+  required,
+  minLength,
+  placeholder,
+}: {
+  label: string;
+  type: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  minLength?: number;
+  placeholder?: string;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</span>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        minLength={minLength}
+        placeholder={placeholder}
+        className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-foreground"
+      />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-foreground"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}

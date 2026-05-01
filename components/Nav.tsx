@@ -57,13 +57,13 @@ export function Nav() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <a
-            href="#"
+            href="/login"
             className="hidden rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
           >
             로그인
           </a>
           <a
-            href="#cta"
+            href="/signup"
             className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
             무료로 시작하기
