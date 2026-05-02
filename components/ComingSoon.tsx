@@ -89,10 +89,10 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
               <div className="mt-6 rounded-2xl border border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
                 💌 정식 오픈 알림을 받고 싶다면{" "}
                 <a
-                  href="mailto:hello@ruby.ai"
+                  href="mailto:contact@plander.io"
                   className="font-medium text-foreground underline-offset-2 hover:underline"
                 >
-                  hello@ruby.ai
+                  contact@plander.io
                 </a>
                 로 메일 주세요.
               </div>
