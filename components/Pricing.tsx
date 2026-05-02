@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { SectionLabel } from "./Features";
+import { ComingSoonAction } from "./ComingSoon";
 
 const plans = [
   {
@@ -148,7 +149,7 @@ function PlanCard({
         ))}
       </ul>
 
-      <button
+      <ComingSoonAction
         className={`mt-10 w-full rounded-full px-6 py-3 text-sm font-medium transition-colors ${
           primary
             ? "bg-background text-foreground hover:bg-background/90"
@@ -156,7 +157,7 @@ function PlanCard({
         }`}
       >
         {cta}
-      </button>
+      </ComingSoonAction>
     </div>
   );
 }

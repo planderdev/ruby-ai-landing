@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, Sparkles } from "lucide-react";
+import { ComingSoonAction } from "./ComingSoon";
 
 export function Hero() {
   return (
@@ -59,19 +60,13 @@ export function Hero() {
 
         {/* CTAs */}
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a
-            href="/signup"
-            className="group inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]"
-          >
+          <ComingSoonAction className="group inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]">
             광고주로 시작하기
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
-          <a
-            href="/signup"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-          >
+          </ComingSoonAction>
+          <ComingSoonAction className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-muted">
             인플루언서 등록하기
-          </a>
+          </ComingSoonAction>
         </div>
 
         {/* visual: floating campaign cards */}

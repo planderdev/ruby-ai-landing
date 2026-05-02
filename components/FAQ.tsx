@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, MessagesSquare } from "lucide-react";
 import { SectionLabel } from "./Features";
+import { ComingSoonAction } from "./ComingSoon";
 
 const faqs = [
   {
@@ -44,16 +45,13 @@ export function FAQ() {
               궁금한 점이 더 있으신가요? 디스코드 커뮤니티에서 루비AI 팀과 다른 마케터들에게 직접
               답을 받을 수 있습니다.
             </p>
-            <a
-              href="#"
-              className="mt-8 inline-flex w-fit items-center gap-4 rounded-full bg-background px-6 py-3 transition-colors hover:bg-accent-soft"
-            >
+            <ComingSoonAction className="mt-8 inline-flex w-fit items-center gap-4 rounded-full bg-background px-6 py-3 text-left transition-colors hover:bg-accent-soft">
               <MessagesSquare className="size-5 text-accent" />
               <span className="flex flex-col">
                 <span className="text-sm font-medium">5,000+ 마케터</span>
                 <span className="text-xs text-muted-foreground">이미 함께하는 커뮤니티</span>
               </span>
-            </a>
+            </ComingSoonAction>
           </div>
 
           {/* Right - accordion */}

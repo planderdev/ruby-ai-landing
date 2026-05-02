@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { SectionLabel } from "./Features";
+import { ComingSoonAction } from "./ComingSoon";
 
 const advertiserSteps = [
   { n: "01", title: "캠페인 등록", desc: "5단계 빌더로 평균 7분 안에 오픈" },
@@ -130,7 +131,7 @@ function FlowColumn({
         ))}
       </div>
 
-      <button
+      <ComingSoonAction
         className={`mt-8 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
           mirrored
             ? "bg-background text-foreground hover:bg-background/90"
@@ -139,7 +140,7 @@ function FlowColumn({
       >
         {cta}
         <ArrowRight className="size-4" />
-      </button>
+      </ComingSoonAction>
     </div>
   );
 }

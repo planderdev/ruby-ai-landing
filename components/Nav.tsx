@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ThemeToggle } from "./ThemeToggle";
+import { ComingSoonAction } from "./ComingSoon";
 
 const menu = [
   { label: "서비스", href: "#features" },
@@ -62,12 +63,9 @@ export function Nav() {
           >
             로그인
           </a>
-          <a
-            href="/signup"
-            className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]"
-          >
+          <ComingSoonAction className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]">
             무료로 시작하기
-          </a>
+          </ComingSoonAction>
         </div>
       </div>
     </header>

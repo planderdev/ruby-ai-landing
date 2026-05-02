@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { ComingSoonAction } from "./ComingSoon";
 
 export function CTA() {
   return (
@@ -33,13 +34,10 @@ export function CTA() {
               신용카드 등록 없이 5분 만에 시작하세요. 글로벌 인플루언서 풀이 곧바로 열립니다.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a
-                href="/signup"
-                className="group inline-flex items-center gap-2 rounded-full bg-background px-7 py-3.5 text-sm font-medium text-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]"
-              >
+              <ComingSoonAction className="group inline-flex items-center gap-2 rounded-full bg-background px-7 py-3.5 text-sm font-medium text-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]">
                 무료로 시작하기
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-              </a>
+              </ComingSoonAction>
               <a
                 href="/login"
                 className="inline-flex items-center gap-2 rounded-full border border-background/20 px-7 py-3.5 text-sm font-medium text-background transition-colors hover:bg-background/10"

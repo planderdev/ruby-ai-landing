@@ -8,20 +8,23 @@ import { Pricing } from "@/components/Pricing";
 import { FAQ } from "@/components/FAQ";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
+import { ComingSoonProvider } from "@/components/ComingSoon";
 
 export default function Home() {
   return (
-    <main className="relative">
-      <Nav />
-      <Hero />
-      <SocialProof />
-      <Features />
-      <HowItWorks />
-      <Global />
-      <Pricing />
-      <FAQ />
-      <CTA />
-      <Footer />
-    </main>
+    <ComingSoonProvider>
+      <main className="relative">
+        <Nav />
+        <Hero />
+        <SocialProof />
+        <Features />
+        <HowItWorks />
+        <Global />
+        <Pricing />
+        <FAQ />
+        <CTA />
+        <Footer />
+      </main>
+    </ComingSoonProvider>
   );
 }
