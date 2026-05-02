@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+// Resolution order:
+// 1. NEXT_PUBLIC_SITE_URL — manual override (custom domain)
+// 2. VERCEL_PROJECT_PRODUCTION_URL — canonical project URL (e.g. ruby-ai-landing.vercel.app),
+//    stays the same across deployments. Use this so social cards reference a stable URL.
+// 3. VERCEL_URL — deployment-specific URL (changes every deploy). Last resort.
+// 4. localhost — dev fallback.
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
   ? process.env.NEXT_PUBLIC_SITE_URL
-  : process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
 
 const title = "루비AI — 글로벌 체험단 마케팅 플랫폼";
 const description =
