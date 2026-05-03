@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { getStaticSupabase } from "@/lib/supabase/static";
 
 export type UICatalog = {
   regions: { id: string; code: string; name: string; flag: string }[];
@@ -20,7 +20,7 @@ export type UICatalog = {
  */
 export const fetchUICatalog = unstable_cache(
   async (): Promise<UICatalog> => {
-    const supabase = await createClient();
+    const supabase = getStaticSupabase();
     const [regions, categories, channels, promotionTypes] = await Promise.all([
       supabase
         .from("regions")
