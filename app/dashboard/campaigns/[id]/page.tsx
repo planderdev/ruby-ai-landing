@@ -5,6 +5,7 @@ import { getCurrentProfile } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import { ApplyButton } from "./ApplyButton";
 import { ApplicantList } from "./ApplicantList";
+import { AIMatches } from "./AIMatches";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "초안",
@@ -272,11 +273,14 @@ export default async function CampaignDetailPage({
         </div>
       </div>
 
-      {/* Advertiser sees applicants */}
+      {/* Advertiser: AI influencer matching + applicants */}
       {isOwner && (
-        <div className="mt-10">
-          <ApplicantList campaignId={id} />
-        </div>
+        <>
+          <AIMatches campaignId={id} />
+          <div className="mt-10">
+            <ApplicantList campaignId={id} />
+          </div>
+        </>
       )}
     </div>
   );

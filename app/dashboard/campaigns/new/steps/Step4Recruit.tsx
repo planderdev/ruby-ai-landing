@@ -1,18 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { X } from "lucide-react";
 import type { CampaignDraft } from "../actions";
 import { StepHeader, Field, NumberInput } from "./_shared";
+import { AIButton } from "../AIButton";
+import { suggestRecruitAndKeywords } from "../ai-actions";
 
 export function Step4Recruit({
   draft,
   update,
+  applyPatch,
 }: {
   draft: CampaignDraft;
   update: <K extends keyof CampaignDraft>(key: K, value: CampaignDraft[K]) => void;
+  applyPatch?: (patch: Partial<CampaignDraft>) => void;
 }) {
   const [keywordInput, setKeywordInput] = useState("");
+  const [aiPending, startAI] = useTransition();
+  const [aiError, setAIError] = useState<string | null>(null);
+
+  function runAI() {
+    setAIError(null);
+    startAI(async () => {
+      const r = await suggestRecruitAndKeywords({
+        industryBrief: draft.industry_brief,
+        businessName: draft.business_name,
+      });
+      if (!r.ok) {
+        setAIError(r.error);
+        return;
+      }
+      applyPatch?.({
+        recruit_count: r.data.recruit_count,
+        keywords: r.data.keywords,
+      });
+    });
+  }
+  const aiReady = draft.industry_brief.trim().length >= 10;
 
   function addKeyword() {
     const k = keywordInput.trim();
@@ -34,10 +59,23 @@ export function Step4Recruit({
 
   return (
     <div className="space-y-6">
-      <StepHeader
-        title="체험단 설정"
-        desc="모집 인원과 콘텐츠 발행 시 강조할 키워드를 정합니다."
-      />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <StepHeader
+          title="체험단 설정"
+          desc="모집 인원과 콘텐츠 발행 시 강조할 키워드를 정합니다."
+        />
+        <AIButton
+          onClick={runAI}
+          pending={aiPending}
+          disabled={!aiReady}
+          label="AI 인원·키워드 추천"
+        />
+      </div>
+      {aiError && (
+        <div className="rounded-2xl border border-accent/30 bg-accent-soft px-4 py-3 text-sm text-accent-ink">
+          ⚠ {aiError}
+        </div>
+      )}
 
       <Field label="모집 인원" hint="선정할 인플루언서 수">
         <NumberInput

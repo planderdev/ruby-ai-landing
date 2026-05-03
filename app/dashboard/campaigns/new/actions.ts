@@ -7,6 +7,7 @@ export type CampaignDraft = {
   // Step 1
   title: string;
   business_name: string;
+  industry_brief: string;
   thumbnail_url: string;
   contact_phone: string;
   region_id: string;
@@ -60,6 +61,7 @@ export async function createCampaign(
       promotion_type_id: draft.promotion_type_id,
       title: draft.title,
       business_name: draft.business_name,
+      industry_brief: draft.industry_brief?.trim() || null,
       thumbnail_url: draft.thumbnail_url || null,
       contact_phone: draft.contact_phone || null,
       recruit_start: draft.recruit_start,

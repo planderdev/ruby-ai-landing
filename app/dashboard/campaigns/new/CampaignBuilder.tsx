@@ -33,6 +33,7 @@ const STEPS = [
 const initialDraft = (regionId: string): CampaignDraft => ({
   title: "",
   business_name: "",
+  industry_brief: "",
   thumbnail_url: "",
   contact_phone: "",
   region_id: regionId,
@@ -72,6 +73,17 @@ export function CampaignBuilder({
 
   function update<K extends keyof CampaignDraft>(key: K, value: CampaignDraft[K]) {
     setDraft((d) => ({ ...d, [key]: value }));
+  }
+
+  function applyPatch(patch: Partial<CampaignDraft>) {
+    setDraft((d) => ({ ...d, ...patch }));
+  }
+
+  /** Called by Step 1 when "AI에게 전부 맡기기" finishes */
+  function applySuperAndJump(patch: Partial<CampaignDraft>) {
+    applyPatch(patch);
+    setError(null);
+    setStep(5);
   }
 
   function canProceed(): string | null {
@@ -147,7 +159,12 @@ export function CampaignBuilder({
 
       <div className="mt-8 rounded-3xl border border-border bg-background p-6 lg:p-10">
         {step === 1 && (
-          <Step1Basic draft={draft} regions={regions} update={update} />
+          <Step1Basic
+            draft={draft}
+            regions={regions}
+            update={update}
+            applySuper={applySuperAndJump}
+          />
         )}
         {step === 2 && (
           <Step2Promotion
@@ -156,11 +173,16 @@ export function CampaignBuilder({
             channels={channels}
             promotionTypes={promotionTypes}
             update={update}
+            applyPatch={applyPatch}
           />
         )}
         {step === 3 && <Step3Schedule draft={draft} update={update} />}
-        {step === 4 && <Step4Recruit draft={draft} update={update} />}
-        {step === 5 && <Step5Offering draft={draft} update={update} />}
+        {step === 4 && (
+          <Step4Recruit draft={draft} update={update} applyPatch={applyPatch} />
+        )}
+        {step === 5 && (
+          <Step5Offering draft={draft} update={update} applyPatch={applyPatch} />
+        )}
       </div>
 
       {error && (

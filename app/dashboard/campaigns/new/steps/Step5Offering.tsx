@@ -1,16 +1,46 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import type { CampaignDraft } from "../actions";
 import { StepHeader, Field, TextInput, NumberInput, TextArea } from "./_shared";
+import { AIButton } from "../AIButton";
+import { suggestOfferingsAndPoints } from "../ai-actions";
 
 export function Step5Offering({
   draft,
   update,
+  applyPatch,
 }: {
   draft: CampaignDraft;
   update: <K extends keyof CampaignDraft>(key: K, value: CampaignDraft[K]) => void;
+  applyPatch?: (patch: Partial<CampaignDraft>) => void;
 }) {
+  const [aiPending, startAI] = useTransition();
+  const [aiError, setAIError] = useState<string | null>(null);
+
+  function runAI() {
+    setAIError(null);
+    startAI(async () => {
+      const r = await suggestOfferingsAndPoints({
+        industryBrief: draft.industry_brief,
+        businessName: draft.business_name,
+      });
+      if (!r.ok) {
+        setAIError(r.error);
+        return;
+      }
+      applyPatch?.({
+        offerings: r.data.offerings.map((o) => ({
+          title: o.title,
+          description: o.description,
+          estimated_value: o.estimated_value,
+        })),
+        point_amount: r.data.point_amount,
+      });
+    });
+  }
+  const aiReady = draft.industry_brief.trim().length >= 10;
   function addOffering() {
     update("offerings", [
       ...draft.offerings,
@@ -32,10 +62,23 @@ export function Step5Offering({
 
   return (
     <div className="space-y-6">
-      <StepHeader
-        title="제공 내역 · 포인트"
-        desc="인플루언서에게 제공하는 제품·서비스와 포인트를 입력합니다."
-      />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <StepHeader
+          title="제공 내역 · 포인트"
+          desc="인플루언서에게 제공하는 제품·서비스와 포인트를 입력합니다."
+        />
+        <AIButton
+          onClick={runAI}
+          pending={aiPending}
+          disabled={!aiReady}
+          label="AI 제공내역·포인트 추천"
+        />
+      </div>
+      {aiError && (
+        <div className="rounded-2xl border border-accent/30 bg-accent-soft px-4 py-3 text-sm text-accent-ink">
+          ⚠ {aiError}
+        </div>
+      )}
 
       <Field label="제공 내역" hint="제공하는 항목별로 추가 (제품, 서비스, 식사권 등)">
         <div className="space-y-3">

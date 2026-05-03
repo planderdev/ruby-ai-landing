@@ -93,19 +93,85 @@ export type Database = {
           status?: Database["public"]["Enums"]["application_status"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "applications_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencers"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "applications_selected_by_fkey"
+            columns: ["selected_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_channels: {
-        Row: { campaign_id: string; channel_type_id: string }
-        Insert: { campaign_id: string; channel_type_id: string }
-        Update: { campaign_id?: string; channel_type_id?: string }
-        Relationships: []
+        Row: {
+          campaign_id: string
+          channel_type_id: string
+        }
+        Insert: {
+          campaign_id: string
+          channel_type_id: string
+        }
+        Update: {
+          campaign_id?: string
+          channel_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_channels_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_channels_channel_type_id_fkey"
+            columns: ["channel_type_id"]
+            isOneToOne: false
+            referencedRelation: "channel_types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_keywords: {
-        Row: { campaign_id: string; id: string; keyword: string }
-        Insert: { campaign_id: string; id?: string; keyword: string }
-        Update: { campaign_id?: string; id?: string; keyword?: string }
-        Relationships: []
+        Row: {
+          campaign_id: string
+          id: string
+          keyword: string
+        }
+        Insert: {
+          campaign_id: string
+          id?: string
+          keyword: string
+        }
+        Update: {
+          campaign_id?: string
+          id?: string
+          keyword?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_keywords_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_missions: {
         Row: {
@@ -129,7 +195,22 @@ export type Database = {
           id?: string
           required?: boolean
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "campaign_missions_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_missions_channel_type_id_fkey"
+            columns: ["channel_type_id"]
+            isOneToOne: false
+            referencedRelation: "channel_types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_offerings: {
         Row: {
@@ -153,7 +234,15 @@ export type Database = {
           id?: string
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "campaign_offerings_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_schedules: {
         Row: {
@@ -177,7 +266,15 @@ export type Database = {
           id?: string
           start_time?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "campaign_schedules_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaigns: {
         Row: {
@@ -192,6 +289,7 @@ export type Database = {
           experience_end: string | null
           experience_start: string | null
           id: string
+          industry_brief: string | null
           point_amount: number
           promotion_type_id: string
           recruit_count: number
@@ -216,6 +314,7 @@ export type Database = {
           experience_end?: string | null
           experience_start?: string | null
           id?: string
+          industry_brief?: string | null
           point_amount?: number
           promotion_type_id: string
           recruit_count?: number
@@ -240,6 +339,7 @@ export type Database = {
           experience_end?: string | null
           experience_start?: string | null
           id?: string
+          industry_brief?: string | null
           point_amount?: number
           promotion_type_id?: string
           recruit_count?: number
@@ -252,7 +352,43 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "campaigns_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: false
+            referencedRelation: "advertisers"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "campaigns_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaigns_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaigns_promotion_type_id_fkey"
+            columns: ["promotion_type_id"]
+            isOneToOne: false
+            referencedRelation: "promotion_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaigns_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categories: {
         Row: {
@@ -342,7 +478,22 @@ export type Database = {
           url?: string
           verified?: boolean
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "influencer_channels_channel_type_id_fkey"
+            columns: ["channel_type_id"]
+            isOneToOne: false
+            referencedRelation: "channel_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "influencer_channels_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencers"
+            referencedColumns: ["profile_id"]
+          },
+        ]
       }
       influencers: {
         Row: {
@@ -375,7 +526,22 @@ export type Database = {
           total_points?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "influencers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "influencers_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "regions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       plans: {
         Row: {
@@ -450,7 +616,15 @@ export type Database = {
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       promotion_types: {
         Row: {
@@ -543,22 +717,55 @@ export type Database = {
           status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: true
+            referencedRelation: "advertisers"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
-    Views: { [_ in never]: never }
+    Views: {
+      [_ in never]: never
+    }
     Functions: {
-      is_advertiser_owner: { Args: { advertiser_uuid: string }; Returns: boolean }
+      is_advertiser_owner: {
+        Args: { advertiser_uuid: string }
+        Returns: boolean
+      }
       is_operator: { Args: never; Returns: boolean }
     }
     Enums: {
-      application_status: "pending" | "selected" | "rejected" | "cancelled" | "completed"
+      application_status:
+        | "pending"
+        | "selected"
+        | "rejected"
+        | "cancelled"
+        | "completed"
       business_type: "individual" | "corporation"
-      campaign_status: "draft" | "pending_approval" | "open" | "closed" | "completed" | "cancelled"
+      campaign_status:
+        | "draft"
+        | "pending_approval"
+        | "open"
+        | "closed"
+        | "completed"
+        | "cancelled"
       plan_tier: "free" | "business" | "enterprise"
       subscription_status: "active" | "cancelled" | "expired"
       user_role: "advertiser" | "influencer" | "operator"
     }
-    CompositeTypes: { [_ in never]: never }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }

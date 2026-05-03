@@ -1,8 +1,11 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import type { CampaignDraft } from "../actions";
 import type { Category, Channel, PromotionType } from "../CampaignBuilder";
 import { StepHeader, Field, Select, TextArea } from "./_shared";
+import { AIButton } from "../AIButton";
+import { suggestPromotionAndChannels } from "../ai-actions";
 
 export function Step2Promotion({
   draft,
@@ -10,13 +13,41 @@ export function Step2Promotion({
   channels,
   promotionTypes,
   update,
+  applyPatch,
 }: {
   draft: CampaignDraft;
   categories: Category[];
   channels: Channel[];
   promotionTypes: PromotionType[];
   update: <K extends keyof CampaignDraft>(key: K, value: CampaignDraft[K]) => void;
+  applyPatch?: (patch: Partial<CampaignDraft>) => void;
 }) {
+  const [aiPending, startAI] = useTransition();
+  const [aiError, setAIError] = useState<string | null>(null);
+
+  function runAI() {
+    setAIError(null);
+    startAI(async () => {
+      const r = await suggestPromotionAndChannels({
+        industryBrief: draft.industry_brief,
+        businessName: draft.business_name,
+      });
+      if (!r.ok) {
+        setAIError(r.error);
+        return;
+      }
+      const validMissions = r.data.missions.filter((m) =>
+        r.data.channel_type_ids.includes(m.channel_type_id)
+      );
+      applyPatch?.({
+        promotion_type_id: r.data.promotion_type_id,
+        category_id: r.data.category_id,
+        channel_type_ids: r.data.channel_type_ids,
+        missions: validMissions,
+      });
+    });
+  }
+  const aiReady = draft.industry_brief.trim().length >= 10;
   function toggleChannel(id: string) {
     const has = draft.channel_type_ids.includes(id);
     const next = has
@@ -44,10 +75,28 @@ export function Step2Promotion({
 
   return (
     <div className="space-y-6">
-      <StepHeader
-        title="홍보 유형 · 채널"
-        desc="어떤 방식으로 홍보할지, 어떤 채널에 콘텐츠를 발행할지 선택합니다."
-      />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <StepHeader
+          title="홍보 유형 · 채널"
+          desc="어떤 방식으로 홍보할지, 어떤 채널에 콘텐츠를 발행할지 선택합니다."
+        />
+        <AIButton
+          onClick={runAI}
+          pending={aiPending}
+          disabled={!aiReady}
+          label="AI가 전부 추천"
+        />
+      </div>
+      {aiError && (
+        <div className="rounded-2xl border border-accent/30 bg-accent-soft px-4 py-3 text-sm text-accent-ink">
+          ⚠ {aiError}
+        </div>
+      )}
+      {!aiReady && (
+        <p className="text-xs text-muted-foreground">
+          💡 Step 1에서 업종 설명을 입력하면 AI 추천을 사용할 수 있습니다.
+        </p>
+      )}
 
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="홍보 유형">
