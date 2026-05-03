@@ -67,6 +67,7 @@ export function Sidebar({
           <Link
             key={it.href}
             href={it.href}
+            prefetch
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <it.icon className="size-4" />

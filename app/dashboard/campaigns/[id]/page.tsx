@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Users, MapPin, Tag, Coins } from "lucide-react";
@@ -6,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ApplyButton } from "./ApplyButton";
 import { ApplicantList } from "./ApplicantList";
 import { AIMatches } from "./AIMatches";
+import { Skeleton } from "@/components/dashboard/Skeleton";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "초안",
@@ -37,7 +39,9 @@ export default async function CampaignDetailPage({
 
   const { data: campaign } = await supabase
     .from("campaigns")
-    .select("*")
+    .select(
+      "id, advertiser_id, title, business_name, thumbnail_url, status, region_id, category_id, promotion_type_id, recruit_count, recruit_start, recruit_end, experience_start, experience_end, same_day_reservation, always_open, point_amount"
+    )
     .eq("id", id)
     .maybeSingle();
   if (!campaign) notFound();
@@ -277,9 +281,19 @@ export default async function CampaignDetailPage({
       {isOwner && (
         <>
           <AIMatches campaignId={id} />
-          <div className="mt-10">
-            <ApplicantList campaignId={id} />
-          </div>
+          <Suspense
+            fallback={
+              <div className="mt-10 space-y-2">
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-20" />
+                <Skeleton className="h-20" />
+              </div>
+            }
+          >
+            <div className="mt-10">
+              <ApplicantList campaignId={id} />
+            </div>
+          </Suspense>
         </>
       )}
     </div>

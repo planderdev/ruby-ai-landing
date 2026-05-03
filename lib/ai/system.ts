@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export type CatalogMeta = {
@@ -8,29 +9,46 @@ export type CatalogMeta = {
 };
 
 /**
- * Fetches all the platform metadata that the AI needs context on.
- * This is the same blob across all users of all campaigns — perfect for prompt cache.
+ * Catalog metadata changes very rarely (only when admin edits the seed tables).
+ * Cache for 5 minutes — saves a 4-table fetch on every campaign-builder load
+ * and every AI call.
  */
-export async function fetchCatalog(): Promise<CatalogMeta> {
-  const supabase = await createClient();
-  const [regions, categories, channels, promotionTypes] = await Promise.all([
-    supabase.from("regions").select("id, code, name, flag").eq("active", true).order("sort_order"),
-    supabase.from("categories").select("id, slug, name").eq("active", true).order("sort_order"),
-    supabase.from("channel_types").select("id, slug, name").eq("active", true).order("sort_order"),
-    supabase
-      .from("promotion_types")
-      .select("id, slug, name, description")
-      .eq("active", true)
-      .order("sort_order"),
-  ]);
+export const fetchCatalog = unstable_cache(
+  async (): Promise<CatalogMeta> => {
+    const supabase = await createClient();
+    const [regions, categories, channels, promotionTypes] = await Promise.all([
+      supabase
+        .from("regions")
+        .select("id, code, name, flag")
+        .eq("active", true)
+        .order("sort_order"),
+      supabase
+        .from("categories")
+        .select("id, slug, name")
+        .eq("active", true)
+        .order("sort_order"),
+      supabase
+        .from("channel_types")
+        .select("id, slug, name")
+        .eq("active", true)
+        .order("sort_order"),
+      supabase
+        .from("promotion_types")
+        .select("id, slug, name, description")
+        .eq("active", true)
+        .order("sort_order"),
+    ]);
 
-  return {
-    regions: regions.data ?? [],
-    categories: categories.data ?? [],
-    channels: channels.data ?? [],
-    promotionTypes: promotionTypes.data ?? [],
-  };
-}
+    return {
+      regions: regions.data ?? [],
+      categories: categories.data ?? [],
+      channels: channels.data ?? [],
+      promotionTypes: promotionTypes.data ?? [],
+    };
+  },
+  ["catalog-meta-v1"],
+  { revalidate: 300, tags: ["catalog"] }
+);
 
 /**
  * Stable system role description. Identical bytes across all calls — caches well.

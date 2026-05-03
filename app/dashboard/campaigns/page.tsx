@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentProfile } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
+import { fetchUICatalog } from "@/lib/cache/ui-catalog";
 import { Plus, Search } from "lucide-react";
 import { CampaignCard } from "@/components/dashboard/CampaignCard";
 
@@ -49,14 +50,11 @@ export default async function CampaignsPage({
 
   if (q) query = query.ilike("title", `%${q}%`);
 
-  const { data: campaigns } = await query;
+  // Fetch the campaigns query and the cached catalog in parallel
+  const [{ data: campaigns }, catalog] = await Promise.all([query, fetchUICatalog()]);
 
-  const [regionsRes, categoriesRes] = await Promise.all([
-    supabase.from("regions").select("id, flag, name"),
-    supabase.from("categories").select("id, emoji, name"),
-  ]);
-  const regionsById = new Map((regionsRes.data ?? []).map((r) => [r.id, r]));
-  const categoriesById = new Map((categoriesRes.data ?? []).map((c) => [c.id, c]));
+  const regionsById = new Map(catalog.regions.map((r) => [r.id, r]));
+  const categoriesById = new Map(catalog.categories.map((c) => [c.id, c]));
 
   return (
     <div>
