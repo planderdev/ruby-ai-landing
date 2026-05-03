@@ -3,6 +3,7 @@
 import type { CampaignDraft } from "../actions";
 import type { Region } from "../CampaignBuilder";
 import { StepHeader, Field, TextInput, Select } from "./_shared";
+import { ImageUpload } from "@/components/ImageUpload";
 
 export function Step1Basic({
   draft,
@@ -48,13 +49,13 @@ export function Step1Basic({
         </Field>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2">
-        <Field label="썸네일 URL" hint="선택 - 800x600 권장">
-          <TextInput
+      <div className="grid gap-5 md:grid-cols-[1.5fr_1fr]">
+        <Field label="캠페인 썸네일" hint="권장 16:9 비율 (1280x720), 최대 5MB">
+          <ImageUpload
+            bucket="campaign-thumbnails"
             value={draft.thumbnail_url}
-            onChange={(v) => update("thumbnail_url", v)}
-            placeholder="https://..."
-            type="url"
+            onChange={(url) => update("thumbnail_url", url)}
+            shape="rect"
           />
         </Field>
 

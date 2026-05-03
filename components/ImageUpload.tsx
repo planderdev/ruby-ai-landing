@@ -1,0 +1,221 @@
+"use client";
+
+import { useState, useRef, useCallback, type DragEvent } from "react";
+import Image from "next/image";
+import { Upload, X, Loader2, ImageIcon, AlertCircle } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+
+type Bucket = "campaign-thumbnails" | "profile-avatars";
+
+const BUCKET_CONFIG: Record<
+  Bucket,
+  { maxSize: number; mimeTypes: string[]; label: string }
+> = {
+  "campaign-thumbnails": {
+    maxSize: 5 * 1024 * 1024,
+    mimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+    label: "JPG, PNG, WEBP, GIF · 최대 5MB",
+  },
+  "profile-avatars": {
+    maxSize: 2 * 1024 * 1024,
+    mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+    label: "JPG, PNG, WEBP · 최대 2MB",
+  },
+};
+
+export function ImageUpload({
+  bucket,
+  value,
+  onChange,
+  shape = "rect",
+  className,
+  hint,
+}: {
+  bucket: Bucket;
+  value: string;
+  onChange: (url: string) => void;
+  /** rect = 16:9 thumbnail, circle = round avatar */
+  shape?: "rect" | "circle";
+  className?: string;
+  hint?: string;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const cfg = BUCKET_CONFIG[bucket];
+
+  const upload = useCallback(
+    async (file: File) => {
+      setError(null);
+
+      if (!cfg.mimeTypes.includes(file.type)) {
+        setError(`지원하지 않는 형식입니다. (${cfg.label})`);
+        return;
+      }
+      if (file.size > cfg.maxSize) {
+        setError(`파일이 너무 큽니다. (최대 ${(cfg.maxSize / 1024 / 1024).toFixed(0)}MB)`);
+        return;
+      }
+
+      setUploading(true);
+      const supabase = createClient();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setError("로그인이 필요합니다.");
+        setUploading(false);
+        return;
+      }
+
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(path, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type,
+        });
+
+      if (uploadError) {
+        setError(`업로드 실패: ${uploadError.message}`);
+        setUploading(false);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(path);
+      onChange(urlData.publicUrl);
+      setUploading(false);
+    },
+    [bucket, cfg, onChange]
+  );
+
+  function handleFile(file: File | undefined | null) {
+    if (file) void upload(file);
+  }
+
+  function onDrop(e: DragEvent) {
+    e.preventDefault();
+    setDragActive(false);
+    handleFile(e.dataTransfer.files?.[0]);
+  }
+
+  function clear() {
+    onChange("");
+    setError(null);
+  }
+
+  const isCircle = shape === "circle";
+  const containerClass = isCircle
+    ? "size-28 rounded-full"
+    : "aspect-[16/9] w-full rounded-2xl";
+
+  return (
+    <div className={className}>
+      <div
+        onDragEnter={() => setDragActive(true)}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragActive(true);
+        }}
+        onDragLeave={() => setDragActive(false)}
+        onDrop={onDrop}
+        className={`relative ${containerClass} overflow-hidden border-2 border-dashed transition-colors ${
+          dragActive
+            ? "border-accent bg-accent-soft"
+            : value
+              ? "border-border bg-muted"
+              : "border-border bg-muted/40 hover:bg-muted/70"
+        }`}
+      >
+        {value ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={value}
+              alt="uploaded"
+              className="size-full object-cover"
+            />
+            <button
+              type="button"
+              onClick={clear}
+              className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80"
+              aria-label="이미지 제거"
+            >
+              <X className="size-4" />
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="flex size-full flex-col items-center justify-center gap-2 px-4 text-center"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">업로드 중...</span>
+              </>
+            ) : (
+              <>
+                <div className="flex size-10 items-center justify-center rounded-xl bg-background">
+                  {isCircle ? (
+                    <ImageIcon className="size-5 text-muted-foreground" />
+                  ) : (
+                    <Upload className="size-5 text-muted-foreground" />
+                  )}
+                </div>
+                {!isCircle && (
+                  <>
+                    <span className="text-sm font-medium">
+                      클릭 또는 드래그하여 업로드
+                    </span>
+                    <span className="text-[11px] text-muted-foreground">{cfg.label}</span>
+                  </>
+                )}
+              </>
+            )}
+          </button>
+        )}
+
+        <input
+          ref={inputRef}
+          type="file"
+          accept={cfg.mimeTypes.join(",")}
+          className="hidden"
+          onChange={(e) => handleFile(e.target.files?.[0])}
+        />
+      </div>
+
+      {/* For circle: show button below */}
+      {isCircle && (
+        <div className="mt-3 flex flex-col items-center gap-1">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="rounded-full border border-border bg-background px-4 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50"
+          >
+            {uploading ? "업로드 중..." : value ? "사진 변경" : "사진 선택"}
+          </button>
+          <span className="text-[11px] text-muted-foreground">{cfg.label}</span>
+        </div>
+      )}
+
+      {hint && !error && (
+        <p className="mt-2 text-xs text-muted-foreground">{hint}</p>
+      )}
+      {error && (
+        <div className="mt-2 flex items-start gap-2 rounded-xl border border-accent/30 bg-accent-soft px-3 py-2 text-xs text-accent-ink">
+          <AlertCircle className="mt-0.5 size-3.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+    </div>
+  );
+}

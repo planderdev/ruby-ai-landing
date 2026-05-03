@@ -37,7 +37,15 @@ const itemsByRole: Record<UserRole, NavItem[]> = {
   ],
 };
 
-export function Sidebar({ role, name }: { role: UserRole; name: string }) {
+export function Sidebar({
+  role,
+  name,
+  avatarUrl,
+}: {
+  role: UserRole;
+  name: string;
+  avatarUrl?: string | null;
+}) {
   const items = itemsByRole[role];
   return (
     <aside className="hidden w-60 shrink-0 border-r border-border bg-background lg:flex lg:flex-col">
@@ -69,9 +77,18 @@ export function Sidebar({ role, name }: { role: UserRole; name: string }) {
 
       <div className="mt-auto border-t border-border p-4">
         <div className="flex items-center gap-3 rounded-xl bg-muted/60 px-3 py-3">
-          <div className="flex size-9 items-center justify-center rounded-full bg-foreground text-background text-sm font-semibold">
-            {name.slice(0, 1).toUpperCase()}
-          </div>
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={avatarUrl}
+              alt={name}
+              className="size-9 shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-foreground text-background text-sm font-semibold">
+              {name.slice(0, 1).toUpperCase()}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <div className="truncate text-sm font-medium">{name}</div>
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
