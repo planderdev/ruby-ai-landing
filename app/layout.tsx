@@ -1,41 +1,47 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SITE, getSiteUrl } from "@/lib/seo/site";
 
-// Resolution order:
-// 1. NEXT_PUBLIC_SITE_URL — manual override (custom domain)
-// 2. VERCEL_PROJECT_PRODUCTION_URL — canonical project URL (e.g. ruby-ai-landing.vercel.app),
-//    stays the same across deployments. Use this so social cards reference a stable URL.
-// 3. VERCEL_URL — deployment-specific URL (changes every deploy). Last resort.
-// 4. localhost — dev fallback.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-  ? process.env.NEXT_PUBLIC_SITE_URL
-  : process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000";
-
-const title = "루비AI — 글로벌 체험단 마케팅 플랫폼";
-const description =
-  "루비AI는 글로벌 인플루언서·체험단을 AI로 매칭하는 마케팅 플랫폼입니다. 캠페인 등록부터 선정·콘텐츠 발행까지 한 곳에서.";
+const siteUrl = getSiteUrl();
+const title = `${SITE.name} — ${SITE.tagline}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title,
-  description,
+  title: {
+    default: title,
+    // Sub-pages can override default title; this template wraps it.
+    template: `%s — ${SITE.name}`,
+  },
+  description: SITE.description,
+  applicationName: SITE.name,
+  keywords: [...SITE.keywords],
+  authors: [{ name: SITE.name }],
+  creator: SITE.name,
+  publisher: SITE.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "ko-KR": "/",
+    },
+  },
   openGraph: {
     title,
-    description,
+    description: SITE.description,
     type: "website",
-    siteName: "루비AI",
-    locale: "ko_KR",
+    siteName: SITE.name,
+    locale: SITE.locale,
     url: "/",
     images: [
       {
         url: "/og.png",
         width: 1280,
         height: 720,
-        alt: "Ruby AI — 글로벌 체험단 마케팅 플랫폼",
+        alt: `Ruby AI — ${SITE.tagline}`,
         type: "image/png",
       },
     ],
@@ -43,8 +49,23 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title,
-    description,
+    description: SITE.description,
     images: ["/og.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
   },
 };
 
@@ -62,7 +83,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang={SITE.language} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

@@ -9,10 +9,12 @@ import { FAQ } from "@/components/FAQ";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { ComingSoonProvider } from "@/components/ComingSoon";
+import { StructuredData } from "@/components/StructuredData";
 
 export default function Home() {
   return (
     <ComingSoonProvider>
+      <StructuredData />
       <main className="relative">
         <Nav />
         <Hero />

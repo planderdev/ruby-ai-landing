@@ -1,9 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthShell } from "@/components/AuthShell";
 import { SignupForm } from "./SignupForm";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata = { title: "회원가입 — 루비AI" };
+export const metadata: Metadata = {
+  title: "회원가입",
+  description:
+    "루비AI 무료로 시작하기. 광고주는 캠페인 등록, 인플루언서는 채널 등록 후 응모 가능.",
+  alternates: { canonical: "/signup" },
+  openGraph: {
+    title: "회원가입 — 루비AI",
+    description: "30초 만에 가입하고 글로벌 체험단 마케팅을 시작하세요.",
+    url: "/signup",
+  },
+};
 
 export default async function SignupPage() {
   const supabase = await createClient();

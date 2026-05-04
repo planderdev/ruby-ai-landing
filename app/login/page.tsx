@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { AuthShell } from "@/components/AuthShell";
 import { LoginForm } from "./LoginForm";
 
-export const metadata = { title: "로그인 — 루비AI" };
+export const metadata: Metadata = {
+  title: "로그인",
+  description: "루비AI 광고주·인플루언서·운영자 로그인.",
+  alternates: { canonical: "/login" },
+  openGraph: {
+    title: "로그인 — 루비AI",
+    description: "루비AI 광고주·인플루언서·운영자 로그인.",
+    url: "/login",
+  },
+};
 
 export default function LoginPage() {
   return (

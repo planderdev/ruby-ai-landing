@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentProfile } from "@/lib/supabase/queries";
 import { Sidebar } from "@/components/dashboard/Sidebar";
+
+// Dashboard is private — exclude from search engines
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const profile = await getCurrentProfile();
