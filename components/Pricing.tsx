@@ -19,7 +19,7 @@ const plans = [
   },
   {
     name: "BUSINESS",
-    price: "₩290,000",
+    price: "₩1,800,000",
     period: "월",
     desc: "성장 단계의 브랜드를 위한 표준 플랜",
     features: [

@@ -65,12 +65,12 @@ export function StructuredData() {
       {
         "@type": "Offer",
         name: "BUSINESS",
-        price: "290000",
+        price: "1800000",
         priceCurrency: "KRW",
         description: "월 정액. 캠페인 무제한, AI 매칭 풀패키지",
         priceSpecification: {
           "@type": "UnitPriceSpecification",
-          price: "290000",
+          price: "1800000",
           priceCurrency: "KRW",
           billingDuration: "P1M",
           unitText: "MONTH",
