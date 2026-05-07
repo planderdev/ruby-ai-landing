@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SITE, getSiteUrl } from "@/lib/seo/site";
+import { GoogleAds } from "@/components/GoogleAds";
 
 const siteUrl = getSiteUrl();
 const title = `${SITE.name} — ${SITE.tagline}`;
@@ -87,7 +88,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <GoogleAds />
+      </body>
     </html>
   );
 }
