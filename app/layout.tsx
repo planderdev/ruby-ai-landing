@@ -64,10 +64,8 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
-  },
+  // Next.js auto-generates <link rel="icon"> from app/icon.png and
+  // <link rel="apple-touch-icon"> from app/apple-icon.png — no manual icons config needed.
 };
 
 const themeScript = `
