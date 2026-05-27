@@ -130,7 +130,7 @@ const ko = {
     paragraph:
       "다국어 캠페인 페이지·현지 결제·환율 자동 변환까지. 글로벌 확장은 옵션이 아니라 루비AI의 기본값입니다.",
     bullets: [
-      "8개 언어 자동 번역 (KO/EN/JA/ZH/TH/VI/ID/MS)",
+      "8개 언어 자동 번역 (KO/EN/JA/CN/TH/VI/ID/MS)",
       "현지 통화 결제 & 자동 정산",
       "지역별 인플루언서 등급 / 검증 시스템",
       "캠페인 단위 글로벌 ↔ 로컬 전환",
@@ -380,7 +380,7 @@ const en: Dict = {
     paragraph:
       "Multilingual campaign pages, local payments, automatic currency conversion. Going global isn't an option — it's the Ruby AI default.",
     bullets: [
-      "Auto-translation in 8 languages (KO/EN/JA/ZH/TH/VI/ID/MS)",
+      "Auto-translation in 8 languages (KO/EN/JA/CN/TH/VI/ID/MS)",
       "Local-currency payment & auto-settlement",
       "Per-region creator tiers / verification system",
       "Global ↔ local switch per campaign",
@@ -628,7 +628,7 @@ const zh: Dict = {
     paragraph:
       "多语言活动页面、本地支付、汇率自动换算。全球化不是可选项，而是 Ruby AI 的默认配置。",
     bullets: [
-      "8 种语言自动翻译 (KO/EN/JA/ZH/TH/VI/ID/MS)",
+      "8 种语言自动翻译 (KO/EN/JA/CN/TH/VI/ID/MS)",
       "本地货币支付与自动结算",
       "按地区的达人分级 / 验证系统",
       "按活动在全球 ↔ 本地间切换",
