@@ -1,4 +1,5 @@
 import { SectionLabel } from "./Features";
+import type { Dict } from "@/lib/i18n";
 
 const markets = [
   { region: "Korea", flag: "🇰🇷", channels: "2,400+", main: true },
@@ -15,30 +16,25 @@ const markets = [
   { region: "China", flag: "🇨🇳", channels: "640+" },
 ];
 
-export function Global() {
+export function Global({ dict }: { dict: Dict["global"] }) {
   return (
     <section id="global" className="py-28 lg:py-36">
       <div className="mx-auto w-full max-w-360 px-5 md:px-10 lg:px-16">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
           <div>
-            <SectionLabel>글로벌</SectionLabel>
+            <SectionLabel>{dict.label}</SectionLabel>
             <h2 className="display mt-4 text-4xl font-semibold lg:text-6xl">
-              국내에서 시작해,
+              {dict.headingLine1}
               <br />
-              <span className="pink-underline">12개 마켓</span>으로.
+              <span className="pink-underline">{dict.headingHighlight}</span>
+              {dict.headingSuffix}
             </h2>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground">
-              다국어 캠페인 페이지·현지 결제·환율 자동 변환까지. 글로벌 확장은 옵션이 아니라
-              루비AI의 기본값입니다.
+              {dict.paragraph}
             </p>
 
             <ul className="mt-8 space-y-3">
-              {[
-                "8개 언어 자동 번역 (KO/EN/JA/ZH/TH/VI/ID/MS)",
-                "현지 통화 결제 & 자동 정산",
-                "지역별 인플루언서 등급 / 검증 시스템",
-                "캠페인 단위 글로벌 ↔ 로컬 전환",
-              ].map((item) => (
+              {dict.bullets.map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm">
                   <span className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-accent" />
                   <span>{item}</span>
@@ -67,18 +63,20 @@ export function Global() {
                     )}
                   </div>
                   <div className="mt-4 text-sm font-medium">{m.region}</div>
-                  <div className="text-xs text-muted-foreground">{m.channels} 채널</div>
+                  <div className="text-xs text-muted-foreground">
+                    {m.channels} {dict.channelsLabel}
+                  </div>
                 </div>
               ))}
             </div>
 
             <div className="mt-6 flex items-center justify-between rounded-2xl bg-background px-5 py-4">
               <div>
-                <div className="text-xs text-muted-foreground">총 누적 채널</div>
+                <div className="text-xs text-muted-foreground">{dict.totalLabel}</div>
                 <div className="display mt-1 text-2xl font-semibold">11,280+</div>
               </div>
               <div className="text-right">
-                <div className="text-xs text-muted-foreground">2026년 신규 마켓</div>
+                <div className="text-xs text-muted-foreground">{dict.newMarketLabel}</div>
                 <div className="mt-1 text-sm font-medium">🇮🇳 India · 🇦🇺 AU · 🇲🇽 MX</div>
               </div>
             </div>

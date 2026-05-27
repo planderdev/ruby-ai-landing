@@ -6,62 +6,40 @@ import {
   LayoutDashboard,
   ShieldCheck,
 } from "lucide-react";
+import type { Dict } from "@/lib/i18n";
 
-const features = [
-  {
-    icon: Target,
-    title: "AI 매칭 엔진",
-    desc: "캠페인 카테고리·예산·타겟 국가에 맞춰 가장 어울리는 인플루언서를 자동으로 추천합니다.",
-    span: "lg:col-span-2",
-    visual: "match",
-  },
-  {
-    icon: ListChecks,
-    title: "5단계 캠페인 빌더",
-    desc: "기본정보 → 홍보유형·채널 → 일정 → 미션·키워드 → 제공내역. 평균 7분 안에 캠페인을 오픈합니다.",
-    visual: "steps",
-  },
-  {
-    icon: Globe2,
-    title: "글로벌 인플루언서 풀",
-    desc: "한국·일본·동남아·미주의 인스타·유튜브·틱톡·블로그 채널을 단일 풀에서 관리합니다.",
-    visual: "globe",
-  },
-  {
-    icon: CheckCircle2,
-    title: "응모·선정 워크플로",
-    desc: "응모자 프로필을 카드 형태로 한눈에 비교하고, 한 번의 클릭으로 선정/미선정을 처리합니다.",
-    visual: "review",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "역할별 대시보드",
-    desc: "광고주·인플루언서·운영자가 각자의 KPI에 집중할 수 있도록 분리된 화면을 제공합니다.",
-    visual: "dashboard",
-  },
-  {
-    icon: ShieldCheck,
-    title: "운영자 검수 시스템",
-    desc: "가짜 계정·부적합 콘텐츠를 사전 차단하는 다단계 승인 프로세스를 갖추었습니다.",
-    span: "lg:col-span-2",
-    visual: "shield",
-  },
+// Structural config (icon / visual / layout) — text comes from the dictionary.
+const layout = [
+  { icon: Target, span: "lg:col-span-2", visual: "match" },
+  { icon: ListChecks, visual: "steps" },
+  { icon: Globe2, visual: "globe" },
+  { icon: CheckCircle2, visual: "review" },
+  { icon: LayoutDashboard, visual: "dashboard" },
+  { icon: ShieldCheck, span: "lg:col-span-2", visual: "shield" },
 ];
 
-export function Features() {
+export function Features({ dict }: { dict: Dict["features"] }) {
   return (
     <section id="features" className="py-28 lg:py-36">
       <div className="mx-auto w-full max-w-360 px-5 md:px-10 lg:px-16">
-        <SectionLabel>핵심 기능</SectionLabel>
+        <SectionLabel>{dict.label}</SectionLabel>
         <h2 className="display mt-4 max-w-3xl text-4xl font-semibold lg:text-6xl">
-          캠페인의 처음과 끝을,
+          {dict.heading1}
           <br />
-          <span className="text-muted-foreground">하나의 워크스페이스에서.</span>
+          <span className="text-muted-foreground">{dict.heading2}</span>
         </h2>
 
         <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {features.map((f) => (
-            <FeatureCard key={f.title} {...f} />
+          {dict.cards.map((card, i) => (
+            <FeatureCard
+              key={card.title}
+              icon={layout[i].icon}
+              span={layout[i].span}
+              visual={layout[i].visual}
+              title={card.title}
+              desc={card.desc}
+              visuals={dict.visuals}
+            />
           ))}
         </div>
       </div>
@@ -75,12 +53,14 @@ function FeatureCard({
   desc,
   span,
   visual,
+  visuals,
 }: {
   icon: typeof Target;
   title: string;
   desc: string;
   span?: string;
   visual: string;
+  visuals: Dict["features"]["visuals"];
 }) {
   return (
     <div
@@ -92,17 +72,23 @@ function FeatureCard({
       <h3 className="mt-6 text-lg font-semibold tracking-tight">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
       <div className="pointer-events-none mt-7 flex flex-1 items-end">
-        <FeatureVisual kind={visual} />
+        <FeatureVisual kind={visual} visuals={visuals} />
       </div>
     </div>
   );
 }
 
-function FeatureVisual({ kind }: { kind: string }) {
+function FeatureVisual({
+  kind,
+  visuals,
+}: {
+  kind: string;
+  visuals: Dict["features"]["visuals"];
+}) {
   if (kind === "match") {
     return (
       <div className="flex w-full items-center gap-2">
-        {["뷰티", "패션", "F&B", "테크"].map((t, i) => (
+        {visuals.matchTags.map((t, i) => (
           <span
             key={t}
             className={`rounded-full border border-border px-3 py-1 text-xs ${
@@ -179,12 +165,12 @@ function FeatureVisual({ kind }: { kind: string }) {
         <div className="flex items-center gap-3">
           <div className="size-9 rounded-full bg-foreground" />
           <div>
-            <div className="text-xs font-medium">3단계 검증 통과</div>
-            <div className="text-[10px] text-muted-foreground">계정 · 콘텐츠 · 약관</div>
+            <div className="text-xs font-medium">{visuals.shieldTitle}</div>
+            <div className="text-[10px] text-muted-foreground">{visuals.shieldSub}</div>
           </div>
         </div>
         <span className="rounded-full bg-accent-soft px-3 py-1 text-[10px] font-medium text-accent-ink">
-          승인 완료
+          {visuals.shieldStatus}
         </span>
       </div>
     );

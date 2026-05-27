@@ -11,6 +11,7 @@ import {
   type AnchorHTMLAttributes,
 } from "react";
 import { X, Sparkles } from "lucide-react";
+import type { Dict } from "@/lib/i18n";
 
 type Ctx = { open: () => void; close: () => void; isOpen: boolean };
 const ComingSoonContext = createContext<Ctx | null>(null);
@@ -21,7 +22,13 @@ export function useComingSoon() {
   return ctx;
 }
 
-export function ComingSoonProvider({ children }: { children: ReactNode }) {
+export function ComingSoonProvider({
+  children,
+  dict,
+}: {
+  children: ReactNode;
+  dict: Dict["comingSoon"];
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
@@ -51,7 +58,7 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
         >
           <button
             type="button"
-            aria-label="닫기"
+            aria-label={dict.close}
             onClick={close}
             className="absolute inset-0 cursor-default bg-black/60 backdrop-blur-sm"
           />
@@ -68,7 +75,7 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={close}
-              aria-label="닫기"
+              aria-label={dict.close}
               className="absolute right-4 top-4 flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               <X className="size-4" />
@@ -79,22 +86,23 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
                 <Sparkles className="size-6" />
               </div>
               <h2 id="cs-title" className="display mt-6 text-2xl font-semibold lg:text-3xl">
-                베타테스트 완료
+                {dict.title}
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                서비스 오픈 준비중입니다.
-                <br />곧 정식 오픈 소식으로 다시 만나요.
+                {dict.body1}
+                <br />
+                {dict.body2}
               </p>
 
               <div className="mt-6 rounded-2xl border border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
-                💌 정식 오픈 알림을 받고 싶다면{" "}
+                {dict.emailPrefix}
                 <a
                   href="mailto:contact@plander.io"
                   className="font-medium text-foreground underline-offset-2 hover:underline"
                 >
                   contact@plander.io
                 </a>
-                로 메일 주세요.
+                {dict.emailSuffix}
               </div>
 
               <button
@@ -102,7 +110,7 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
                 onClick={close}
                 className="mt-6 w-full rounded-full bg-foreground py-3 text-sm font-medium text-background transition-transform hover:scale-[1.01] active:scale-[0.99]"
               >
-                확인
+                {dict.confirm}
               </button>
             </div>
           </div>

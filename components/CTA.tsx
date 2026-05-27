@@ -1,7 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import { ComingSoonAction } from "./ComingSoon";
+import type { Dict } from "@/lib/i18n";
 
-export function CTA() {
+export function CTA({ dict }: { dict: Dict["cta"] }) {
   return (
     <section id="cta" className="py-28 lg:py-36">
       <div className="mx-auto w-full max-w-360 px-5 md:px-10 lg:px-16">
@@ -23,26 +24,28 @@ export function CTA() {
           <div className="relative text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-background/15 bg-background/5 px-4 py-1.5 text-xs font-medium tracking-wider text-background/80 backdrop-blur">
               <span className="size-1.5 rounded-full bg-accent" />
-              지금 가입하면 첫 캠페인 무료
+              {dict.badge}
             </span>
             <h2 className="display mx-auto mt-6 max-w-3xl text-4xl font-semibold lg:text-6xl">
-              오늘 등록하면,
+              {dict.headingLine1}
               <br />
-              첫 캠페인은 <span className="text-accent">무료</span>입니다.
+              {dict.headingLine2Pre}
+              <span className="text-accent">{dict.headingHighlight}</span>
+              {dict.headingLine2Post}
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-background/70">
-              신용카드 등록 없이 5분 만에 시작하세요. 글로벌 인플루언서 풀이 곧바로 열립니다.
+              {dict.sub}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <ComingSoonAction className="group inline-flex items-center gap-2 rounded-full bg-background px-7 py-3.5 text-sm font-medium text-foreground transition-transform hover:scale-[1.02] active:scale-[0.98]">
-                무료로 시작하기
+                {dict.ctaPrimary}
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
               </ComingSoonAction>
               <a
                 href="/login"
                 className="inline-flex items-center gap-2 rounded-full border border-background/20 px-7 py-3.5 text-sm font-medium text-background transition-colors hover:bg-background/10"
               >
-                로그인
+                {dict.login}
               </a>
             </div>
           </div>
