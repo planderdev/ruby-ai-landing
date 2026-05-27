@@ -32,7 +32,7 @@ export const hreflangMap: Record<Locale, string> = {
 export const localeNames: Record<Locale, { native: string; code: string }> = {
   ko: { native: "한국어", code: "KR" },
   en: { native: "English", code: "EN" },
-  zh: { native: "中文", code: "ZH" },
+  zh: { native: "中文", code: "CN" },
 };
 
 export function isLocale(value: string): value is Locale {
