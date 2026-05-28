@@ -1,44 +1,45 @@
-import { SITE, getSiteUrl } from "@/lib/seo/site";
+import { getSiteUrl } from "@/lib/seo/site";
+import { dictionaries, htmlLangAttr, type Locale } from "@/lib/i18n";
 
 /**
  * JSON-LD structured data — helps Google understand the site and produce
  * rich results (sitelinks, knowledge panel, software card).
  *
- * Render once on the landing page. Don't include on dashboard/auth.
+ * Render once per landing page. Don't include on dashboard/auth.
  */
-export function StructuredData() {
+export function StructuredData({ locale }: { locale: Locale }) {
   const url = getSiteUrl();
+  const dict = dictionaries[locale];
+  const name = dict.meta.brand;
+  const description = dict.meta.description;
+  const inLanguage = htmlLangAttr[locale];
 
   // Organization — appears in knowledge panel + sitelinks
   const organization = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: SITE.name,
-    legalName: SITE.legalName,
+    name,
+    legalName: name,
     url,
     logo: `${url}/logo.png`,
     image: `${url}/og.png`,
-    description: SITE.description,
-    email: SITE.email,
+    description,
+    email: "contact@plander.io",
     sameAs: [] as string[],
-    areaServed: SITE.areaServed.map((country) => ({
-      "@type": "Country",
-      name: country,
-    })),
   };
 
   // WebSite — enables sitelinks search box
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: SITE.name,
-    alternateName: ["Ruby AI", "루비 AI"],
+    name,
+    alternateName: ["Ruby AI", "루비AI", "루비 AI"],
     url,
-    description: SITE.description,
-    inLanguage: SITE.language,
+    description,
+    inLanguage,
     publisher: {
       "@type": "Organization",
-      name: SITE.name,
+      name,
       logo: `${url}/logo.png`,
     },
   };
@@ -47,27 +48,27 @@ export function StructuredData() {
   const software = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: SITE.name,
+    name,
     applicationCategory: "BusinessApplication",
     applicationSubCategory: "MarketingApplication",
     operatingSystem: "Web",
-    description: SITE.description,
+    description,
     url,
-    inLanguage: SITE.language,
+    inLanguage,
     offers: [
       {
         "@type": "Offer",
         name: "FREE",
         price: "0",
         priceCurrency: "KRW",
-        description: "첫 캠페인 무료, 응모자 10명까지 열람",
+        description: dict.pricing.plans[0].desc,
       },
       {
         "@type": "Offer",
         name: "BUSINESS",
         price: "1800000",
         priceCurrency: "KRW",
-        description: "월 정액. 캠페인 무제한, AI 매칭 풀패키지",
+        description: dict.pricing.plans[1].desc,
         priceSpecification: {
           "@type": "UnitPriceSpecification",
           price: "1800000",
@@ -80,12 +81,12 @@ export function StructuredData() {
         "@type": "Offer",
         name: "ENTERPRISE",
         priceCurrency: "KRW",
-        description: "전담 매니저 · API 연동 · 글로벌 멀티 브랜드",
+        description: dict.pricing.plans[2].desc,
       },
     ],
     audience: {
       "@type": "BusinessAudience",
-      audienceType: ["광고주", "인플루언서", "마케팅 담당자"],
+      audienceType: dict.audience,
     },
   };
 

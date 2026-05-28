@@ -4,16 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ThemeToggle } from "./ThemeToggle";
 import { ComingSoonAction } from "./ComingSoon";
+import { LangSwitcher } from "./LangSwitcher";
+import type { Dict } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
-const menu = [
-  { label: "서비스", href: "#features" },
-  { label: "작동 방식", href: "#how" },
-  { label: "글로벌", href: "#global" },
-  { label: "요금제", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
-];
-
-export function Nav() {
+export function Nav({ dict, locale }: { dict: Dict["nav"]; locale: Locale }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -32,10 +27,10 @@ export function Nav() {
       }`}
     >
       <div className="mx-auto flex h-16 w-full max-w-360 items-center justify-between px-5 md:px-10 lg:px-16">
-        <a href="#" className="flex items-center" aria-label="루비AI 홈">
+        <a href="#" className="flex items-center" aria-label={dict.home}>
           <Image
             src="/logo.png"
-            alt="루비AI"
+            alt={dict.home}
             width={510}
             height={160}
             priority
@@ -44,7 +39,7 @@ export function Nav() {
         </a>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {menu.map((m) => (
+          {dict.menu.map((m) => (
             <a
               key={m.href}
               href={m.href}
@@ -56,19 +51,19 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <LangSwitcher locale={locale} />
           <ThemeToggle />
           <a
             href="/login"
             className="hidden rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
           >
-            로그인
+            {dict.login}
           </a>
           <ComingSoonAction className="rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]">
-            무료로 시작하기
+            {dict.cta}
           </ComingSoonAction>
         </div>
       </div>
     </header>
   );
 }
-

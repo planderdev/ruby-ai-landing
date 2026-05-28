@@ -2,8 +2,9 @@
 
 import { ArrowRight, Sparkles } from "lucide-react";
 import { ComingSoonAction } from "./ComingSoon";
+import type { Dict } from "@/lib/i18n";
 
-export function Hero() {
+export function Hero({ dict }: { dict: Dict["hero"] }) {
   return (
     <section className="relative overflow-hidden pt-32 pb-24 lg:pt-40 lg:pb-32">
       {/* grid background */}
@@ -23,16 +24,16 @@ export function Hero() {
         <div className="flex justify-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-1.5 text-xs font-medium tracking-wider text-muted-foreground backdrop-blur">
             <Sparkles className="size-3.5 text-accent" />
-            GLOBAL CAMPAIGN PLATFORM · 12개국 운영중
+            {dict.eyebrow}
           </span>
         </div>
 
         {/* headline */}
         <h1 className="display mt-8 text-center text-[clamp(2.5rem,7vw,5.75rem)] font-semibold">
-          전 세계 체험단을,
+          {dict.headlineLine1}
           <br />
           <span className="relative inline-block">
-            한 번의 캠페인
+            {dict.headlineHighlight}
             <svg
               aria-hidden
               viewBox="0 0 320 14"
@@ -48,37 +49,37 @@ export function Hero() {
               />
             </svg>
           </span>
-          으로.
+          {dict.headlineSuffix}
         </h1>
 
         {/* sub */}
         <p className="mx-auto mt-7 max-w-2xl text-center text-base leading-relaxed text-muted-foreground lg:text-lg">
-          루비AI는 글로벌 인플루언서·체험단을 AI로 매칭하는 마케팅 플랫폼입니다.
+          {dict.sub1}
           <br className="hidden md:block" />
-          캠페인 등록부터 선정·콘텐츠 발행까지, 한 곳에서 끝냅니다.
+          {dict.sub2}
         </p>
 
         {/* CTAs */}
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <ComingSoonAction className="group inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]">
-            광고주로 시작하기
+            {dict.ctaPrimary}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </ComingSoonAction>
           <ComingSoonAction className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-3.5 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-            인플루언서 등록하기
+            {dict.ctaSecondary}
           </ComingSoonAction>
         </div>
 
         {/* visual: floating campaign cards */}
         <div className="relative mx-auto mt-20 max-w-5xl">
-          <FloatingCards />
+          <FloatingCards dict={dict.card} />
         </div>
       </div>
     </section>
   );
 }
 
-function FloatingCards() {
+function FloatingCards({ dict }: { dict: Dict["hero"]["card"] }) {
   return (
     <div className="relative grid grid-cols-12 gap-4">
       {/* main central card */}
@@ -87,20 +88,16 @@ function FloatingCards() {
           <div className="flex items-center gap-3">
             <div className="size-10 rounded-2xl bg-accent-soft" />
             <div>
-              <div className="text-sm font-medium">글로벌 뷰티 체험단 모집</div>
-              <div className="text-xs text-muted-foreground">캠페인 ID · #RUBY-2418</div>
+              <div className="text-sm font-medium">{dict.title}</div>
+              <div className="text-xs text-muted-foreground">{dict.id}</div>
             </div>
           </div>
           <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent-ink">
-            모집중
+            {dict.status}
           </span>
         </div>
         <div className="mt-4 grid grid-cols-3 gap-3">
-          {[
-            { label: "응모자", value: "248명" },
-            { label: "선정 예정", value: "20명" },
-            { label: "마감", value: "D-3" },
-          ].map((s) => (
+          {dict.stats.map((s) => (
             <div key={s.label} className="rounded-2xl bg-muted px-4 py-3">
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
                 {s.label}
@@ -110,7 +107,7 @@ function FloatingCards() {
           ))}
         </div>
         <div className="mt-4 flex flex-wrap gap-1.5">
-          {["뷰티", "스킨케어", "K-Beauty", "Instagram", "TikTok"].map((t) => (
+          {dict.tags.map((t) => (
             <span
               key={t}
               className="rounded-full border border-border px-2.5 py-0.5 text-[11px] text-muted-foreground"
@@ -130,7 +127,7 @@ function FloatingCards() {
             <div className="text-[10px] text-muted-foreground">JP · 24.1K</div>
           </div>
         </div>
-        <div className="mt-3 text-[11px] text-muted-foreground">매칭 점수</div>
+        <div className="mt-3 text-[11px] text-muted-foreground">{dict.matchScore}</div>
         <div className="mt-1 text-lg font-semibold">94<span className="text-muted-foreground text-sm">/100</span></div>
       </div>
 
@@ -143,7 +140,7 @@ function FloatingCards() {
             <div className="text-[10px] text-muted-foreground">KR · 102K</div>
           </div>
         </div>
-        <div className="mt-3 text-[11px] text-muted-foreground">매칭 점수</div>
+        <div className="mt-3 text-[11px] text-muted-foreground">{dict.matchScore}</div>
         <div className="mt-1 text-lg font-semibold">97<span className="text-muted-foreground text-sm">/100</span></div>
       </div>
     </div>

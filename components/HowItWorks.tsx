@@ -1,48 +1,22 @@
 import { ArrowRight } from "lucide-react";
 import { SectionLabel } from "./Features";
 import { ComingSoonAction } from "./ComingSoon";
+import type { Dict } from "@/lib/i18n";
 
-const advertiserSteps = [
-  { n: "01", title: "캠페인 등록", desc: "5단계 빌더로 평균 7분 안에 오픈" },
-  { n: "02", title: "응모자 검토", desc: "AI 매칭 점수와 함께 한눈에 비교" },
-  { n: "03", title: "체험단 선정", desc: "원클릭 선정 / 미선정 처리" },
-  { n: "04", title: "콘텐츠 수령", desc: "발행 확인 후 자동 정산" },
-];
-
-const creatorSteps = [
-  { n: "01", title: "SNS 채널 등록", desc: "인스타·유튜브·틱톡·블로그" },
-  { n: "02", title: "캠페인 둘러보기", desc: "내 카테고리에 맞춰 자동 추천" },
-  { n: "03", title: "응모 & 대기", desc: "선정 결과 평균 24시간 이내" },
-  { n: "04", title: "콘텐츠 발행", desc: "체험 후 발행 → 포인트 적립" },
-];
-
-export function HowItWorks() {
+export function HowItWorks({ dict }: { dict: Dict["howItWorks"] }) {
   return (
     <section id="how" className="border-t border-border bg-muted/40 py-28 lg:py-36">
       <div className="mx-auto w-full max-w-360 px-5 md:px-10 lg:px-16">
-        <SectionLabel>작동 방식</SectionLabel>
+        <SectionLabel>{dict.label}</SectionLabel>
         <h2 className="display mt-4 max-w-3xl text-4xl font-semibold lg:text-6xl">
-          광고주와 인플루언서를,
+          {dict.heading1}
           <br />
-          <span className="text-muted-foreground">정확히 한 번에 연결합니다.</span>
+          <span className="text-muted-foreground">{dict.heading2}</span>
         </h2>
 
         <div className="mt-14 grid gap-4 lg:grid-cols-2">
-          <FlowColumn
-            badge="FOR BRANDS"
-            title="광고주"
-            desc="제품을 알리고 싶은 브랜드라면"
-            steps={advertiserSteps}
-            cta="광고주 데모 보기"
-          />
-          <FlowColumn
-            badge="FOR CREATORS"
-            title="인플루언서"
-            desc="체험을 즐기는 크리에이터라면"
-            steps={creatorSteps}
-            cta="크리에이터 가이드"
-            mirrored
-          />
+          <FlowColumn column={dict.advertiser} />
+          <FlowColumn column={dict.creator} mirrored />
         </div>
       </div>
     </section>
@@ -50,18 +24,10 @@ export function HowItWorks() {
 }
 
 function FlowColumn({
-  badge,
-  title,
-  desc,
-  steps,
-  cta,
+  column,
   mirrored,
 }: {
-  badge: string;
-  title: string;
-  desc: string;
-  steps: { n: string; title: string; desc: string }[];
-  cta: string;
+  column: Dict["howItWorks"]["advertiser"];
   mirrored?: boolean;
 }) {
   return (
@@ -78,23 +44,23 @@ function FlowColumn({
               : "bg-accent-soft text-accent-ink"
           }`}
         >
-          {badge}
+          {column.badge}
         </span>
         <span
           className={`text-xs ${
             mirrored ? "text-background/60" : "text-muted-foreground"
           }`}
         >
-          {desc}
+          {column.desc}
         </span>
       </div>
 
-      <h3 className="display mt-6 text-3xl font-semibold lg:text-4xl">{title}</h3>
+      <h3 className="display mt-6 text-3xl font-semibold lg:text-4xl">{column.title}</h3>
 
       <div className="mt-8 space-y-3">
-        {steps.map((s, i) => (
+        {column.steps.map((s, i) => (
           <div
-            key={s.n}
+            key={s.title}
             className={`flex items-start gap-4 rounded-2xl px-4 py-4 ${
               mirrored
                 ? "bg-background/5 lg:bg-background/[0.06]"
@@ -108,7 +74,7 @@ function FlowColumn({
                   : "bg-foreground text-background"
               }`}
             >
-              {s.n}
+              {String(i + 1).padStart(2, "0")}
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-sm font-medium">{s.title}</div>
@@ -120,7 +86,7 @@ function FlowColumn({
                 {s.desc}
               </div>
             </div>
-            {i < steps.length - 1 && (
+            {i < column.steps.length - 1 && (
               <ArrowRight
                 className={`mt-2 size-4 shrink-0 ${
                   mirrored ? "text-background/40" : "text-muted-foreground"
@@ -138,7 +104,7 @@ function FlowColumn({
             : "border border-border bg-background hover:bg-muted"
         }`}
       >
-        {cta}
+        {column.cta}
         <ArrowRight className="size-4" />
       </ComingSoonAction>
     </div>

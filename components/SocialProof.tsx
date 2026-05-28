@@ -1,20 +1,15 @@
-const stats = [
-  { value: "12개국", label: "활성 마켓" },
-  { value: "8,500+", label: "등록 인플루언서" },
-  { value: "1,200+", label: "진행 캠페인" },
-  { value: "24h", label: "평균 응답" },
-];
+import type { Dict } from "@/lib/i18n";
 
 const flags = ["🇰🇷", "🇯🇵", "🇺🇸", "🇹🇼", "🇹🇭", "🇻🇳", "🇮🇩", "🇵🇭", "🇸🇬", "🇲🇾", "🇭🇰", "🇨🇳"];
 
-export function SocialProof() {
+export function SocialProof({ dict }: { dict: Dict["socialProof"] }) {
   return (
     <section className="border-y border-border bg-muted/40 py-12">
       <div className="mx-auto w-full max-w-360 px-5 md:px-10 lg:px-16">
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
           {/* stats */}
           <div className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
-            {stats.map((s) => (
+            {dict.stats.map((s) => (
               <div key={s.label}>
                 <div className="display text-3xl font-semibold lg:text-4xl">{s.value}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
