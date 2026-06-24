@@ -134,6 +134,7 @@ export function Step1Basic({
             value={draft.region_id}
             onChange={(v) => update("region_id", v)}
             options={regions.map((r) => ({ value: r.id, label: `${r.flag} ${r.name}` }))}
+            placeholder="지역을 선택해주세요"
           />
         </Field>
       </div>

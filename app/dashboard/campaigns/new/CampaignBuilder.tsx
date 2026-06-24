@@ -67,7 +67,10 @@ export function CampaignBuilder({
 }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [draft, setDraft] = useState<CampaignDraft>(() => initialDraft(regions[0]?.id ?? ""));
+  // Empty region_id forces the user to pick from the dropdown — matches the
+  // behavior of the other Step 2 selects (promotion type, category) so the UX
+  // is consistent. canProceed() enforces it before moving to Step 2.
+  const [draft, setDraft] = useState<CampaignDraft>(() => initialDraft(""));
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
