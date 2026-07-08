@@ -52,3 +52,79 @@ export async function updateProfile(
   revalidatePath("/dashboard");
   return { ok: true };
 }
+
+// ---------- Influencer SNS channel management ----------
+
+export type ChannelPayload = {
+  channel_type_id: string;
+  url: string;
+  handle: string | null;
+  followers: number;
+};
+
+type ActionResult = { ok: true } | { ok: false; error: string };
+
+export async function addChannel(payload: ChannelPayload): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "로그인이 필요합니다." };
+
+  const url = payload.url.trim();
+  if (!url) return { ok: false, error: "채널 URL을 입력해주세요." };
+  if (!payload.channel_type_id) return { ok: false, error: "채널 종류를 선택해주세요." };
+
+  const { error } = await supabase.from("influencer_channels").insert({
+    influencer_id: user.id,
+    channel_type_id: payload.channel_type_id,
+    url,
+    handle: payload.handle?.trim() || null,
+    followers: Math.max(0, payload.followers || 0),
+  });
+  if (error) return { ok: false, error: `채널 추가 실패: ${error.message}` };
+
+  revalidatePath("/dashboard/settings");
+  return { ok: true };
+}
+
+export async function deleteChannel(channelId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "로그인이 필요합니다." };
+
+  // RLS(influencer_channels_self_write)가 본인 채널만 삭제되도록 보장하지만
+  // 명시적으로도 influencer_id를 걸어 방어.
+  const { error } = await supabase
+    .from("influencer_channels")
+    .delete()
+    .eq("id", channelId)
+    .eq("influencer_id", user.id);
+  if (error) return { ok: false, error: `채널 삭제 실패: ${error.message}` };
+
+  revalidatePath("/dashboard/settings");
+  return { ok: true };
+}
+
+export async function updateChannelFollowers(
+  channelId: string,
+  followers: number
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "로그인이 필요합니다." };
+
+  const { error } = await supabase
+    .from("influencer_channels")
+    .update({ followers: Math.max(0, followers || 0) })
+    .eq("id", channelId)
+    .eq("influencer_id", user.id);
+  if (error) return { ok: false, error: `팔로워 수 저장 실패: ${error.message}` };
+
+  revalidatePath("/dashboard/settings");
+  return { ok: true };
+}
