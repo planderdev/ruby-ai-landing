@@ -543,6 +543,75 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          id: string
+          advertiser_id: string
+          plan_id: string
+          order_id: string
+          order_name: string
+          payment_key: string | null
+          amount: number
+          currency: string
+          status: string
+          method: string | null
+          fail_reason: string | null
+          approved_at: string | null
+          raw: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          advertiser_id: string
+          plan_id: string
+          order_id: string
+          order_name: string
+          payment_key?: string | null
+          amount: number
+          currency?: string
+          status?: string
+          method?: string | null
+          fail_reason?: string | null
+          approved_at?: string | null
+          raw?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          advertiser_id?: string
+          plan_id?: string
+          order_id?: string
+          order_name?: string
+          payment_key?: string | null
+          amount?: number
+          currency?: string
+          status?: string
+          method?: string | null
+          fail_reason?: string | null
+          approved_at?: string | null
+          raw?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_advertiser_id_fkey"
+            columns: ["advertiser_id"]
+            isOneToOne: false
+            referencedRelation: "advertisers"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "payments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plans: {
         Row: {
           applicant_view_limit: number | null

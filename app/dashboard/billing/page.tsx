@@ -167,6 +167,13 @@ export default async function BillingPage() {
                 >
                   현재 사용중
                 </div>
+              ) : plan.tier === "business" ? (
+                <a
+                  href="/dashboard/billing/checkout"
+                  className="mt-8 w-full rounded-full bg-background px-6 py-3 text-center text-sm font-medium text-foreground transition-colors hover:bg-background/90"
+                >
+                  카드로 결제하기
+                </a>
               ) : (
                 <a
                   href={`mailto:contact@plander.io?subject=${encodeURIComponent(
@@ -174,11 +181,7 @@ export default async function BillingPage() {
                   )}&body=${encodeURIComponent(
                     `계정: ${profile.email}\n현재 플랜: ${currentPlan?.name ?? "FREE"}\n희망 플랜: ${plan.name}\n\n문의 내용을 적어주세요.`
                   )}`}
-                  className={`mt-8 w-full rounded-full px-6 py-3 text-center text-sm font-medium transition-colors ${
-                    isBusiness
-                      ? "bg-background text-foreground hover:bg-background/90"
-                      : "border border-border bg-background hover:bg-muted"
-                  }`}
+                  className="mt-8 w-full rounded-full border border-border bg-background px-6 py-3 text-center text-sm font-medium transition-colors hover:bg-muted"
                 >
                   {copy.cta}
                 </a>
@@ -189,8 +192,8 @@ export default async function BillingPage() {
       </div>
 
       <div className="mt-8 rounded-2xl border border-accent/30 bg-accent-soft/50 px-5 py-4 text-sm text-accent-ink">
-        💳 온라인 결제는 준비 중입니다. 지금은 업그레이드 문의를 주시면 담당자가 24시간 이내에
-        연락드려요. 결제 연동(토스페이먼츠) 오픈 시 기존 문의 고객에게 우선 안내됩니다.
+        💳 BUSINESS 플랜은 토스페이먼츠로 안전하게 결제됩니다. ENTERPRISE 플랜은 상담 문의를
+        주시면 담당자가 24시간 이내에 연락드려요.
       </div>
     </div>
   );
