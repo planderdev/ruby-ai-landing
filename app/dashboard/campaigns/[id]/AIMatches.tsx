@@ -16,7 +16,13 @@ export function AIMatches({ campaignId }: { campaignId: string }) {
   function run() {
     setError(null);
     startTransition(async () => {
-      const r = await matchInfluencers(campaignId);
+      let r: Awaited<ReturnType<typeof matchInfluencers>>;
+      try {
+        r = await matchInfluencers(campaignId);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "AI 매칭 중 오류가 발생했습니다.");
+        return;
+      }
       if (!r.ok) {
         setError(r.error);
         return;

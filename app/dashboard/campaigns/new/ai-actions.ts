@@ -1,7 +1,7 @@
 "use server";
 
 import { getAnthropic, AI_MODEL } from "@/lib/ai/client";
-import { buildSystemBlocks, fetchCatalog, type CatalogMeta } from "@/lib/ai/system";
+import { buildSystemBlocks, fetchCatalog } from "@/lib/ai/system";
 import { createClient } from "@/lib/supabase/server";
 
 // ---------- Helpers ---------------------------------------------------------
@@ -17,20 +17,26 @@ async function ensureAuth(): Promise<{ ok: true } | { ok: false; error: string }
   return { ok: true };
 }
 
-/** Run a Claude call with prompt-caching system + JSON-schema output. */
+/**
+ * Run a Claude call with prompt-caching system + JSON-schema output.
+ *
+ * 모든 실패 지점(API 키 누락, 카탈로그 로드, 네트워크, 파싱)을 try 안에서
+ * 처리해 {ok:false}로 반환 — 액션이 throw하면 Next.js가 에러 페이지로
+ * 보내버리므로 절대 밖으로 던지지 않는다.
+ */
 async function callAI<T>(opts: {
-  catalog: CatalogMeta;
   userPrompt: string;
   schema: Record<string, unknown>;
   maxTokens?: number;
 }): Promise<AIResult<T>> {
-  const client = getAnthropic();
   try {
+    const client = getAnthropic();
+    const catalog = await fetchCatalog();
     const response = await client.messages.create({
       model: AI_MODEL,
       max_tokens: opts.maxTokens ?? 2048,
       thinking: { type: "adaptive" },
-      system: buildSystemBlocks(opts.catalog),
+      system: buildSystemBlocks(catalog),
       output_config: {
         format: {
           type: "json_schema",
@@ -68,10 +74,7 @@ export async function suggestTitles(input: {
     return { ok: false, error: "업종 설명과 상호명이 필요합니다." };
   }
 
-  const catalog = await fetchCatalog();
-  return callAI<TitleSuggestion>({
-    catalog,
-    userPrompt: `다음 정보로 인플루언서가 클릭하고 싶어할 만한 캠페인 제목 3개를 만들어주세요.
+  return callAI<TitleSuggestion>({    userPrompt: `다음 정보로 인플루언서가 클릭하고 싶어할 만한 캠페인 제목 3개를 만들어주세요.
 
 상호명: ${input.businessName}
 업종 설명: ${input.industryBrief}
@@ -113,10 +116,7 @@ export async function suggestPromotionAndChannels(input: {
   if (!auth.ok) return auth;
   if (!input.industryBrief?.trim()) return { ok: false, error: "업종 설명이 필요합니다." };
 
-  const catalog = await fetchCatalog();
-  return callAI<PromotionSuggestion>({
-    catalog,
-    userPrompt: `상호명: ${input.businessName}
+  return callAI<PromotionSuggestion>({    userPrompt: `상호명: ${input.businessName}
 업종 설명: ${input.industryBrief}
 
 위 정보를 보고:
@@ -174,10 +174,7 @@ export async function suggestRecruitAndKeywords(input: {
   if (!auth.ok) return auth;
   if (!input.industryBrief?.trim()) return { ok: false, error: "업종 설명이 필요합니다." };
 
-  const catalog = await fetchCatalog();
-  return callAI<RecruitSuggestion>({
-    catalog,
-    userPrompt: `상호명: ${input.businessName}
+  return callAI<RecruitSuggestion>({    userPrompt: `상호명: ${input.businessName}
 업종 설명: ${input.industryBrief}
 
 위 정보를 보고:
@@ -218,10 +215,7 @@ export async function suggestOfferingsAndPoints(input: {
   if (!auth.ok) return auth;
   if (!input.industryBrief?.trim()) return { ok: false, error: "업종 설명이 필요합니다." };
 
-  const catalog = await fetchCatalog();
-  return callAI<OfferingSuggestion>({
-    catalog,
-    userPrompt: `상호명: ${input.businessName}
+  return callAI<OfferingSuggestion>({    userPrompt: `상호명: ${input.businessName}
 업종 설명: ${input.industryBrief}
 
 위 정보를 보고:
@@ -280,10 +274,7 @@ export async function suggestEverything(input: {
     return { ok: false, error: "업종 설명과 상호명이 필요합니다." };
   }
 
-  const catalog = await fetchCatalog();
-  return callAI<FullDraftSuggestion>({
-    catalog,
-    maxTokens: 4096,
+  return callAI<FullDraftSuggestion>({    maxTokens: 4096,
     userPrompt: `상호명: ${input.businessName}
 업종 설명: ${input.industryBrief}
 

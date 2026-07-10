@@ -17,8 +17,20 @@ export type MatchResult =
 /**
  * Asks AI to rank the most suitable influencers for a campaign.
  * Returns top 5 with score (0-100) + plain-Korean reasoning.
+ *
+ * 서버 액션이 throw하면 클라이언트가 에러 페이지로 튕기므로,
+ * 모든 예외를 {ok:false}로 흡수하는 가드 래퍼.
  */
 export async function matchInfluencers(campaignId: string): Promise<MatchResult> {
+  try {
+    return await matchInfluencersInner(campaignId);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: `AI 매칭 실패: ${msg}` };
+  }
+}
+
+async function matchInfluencersInner(campaignId: string): Promise<MatchResult> {
   const supabase = await createClient();
   const {
     data: { user },

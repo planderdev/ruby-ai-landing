@@ -23,10 +23,16 @@ export function Step4Recruit({
   function runAI() {
     setAIError(null);
     startAI(async () => {
-      const r = await suggestRecruitAndKeywords({
-        industryBrief: draft.industry_brief,
-        businessName: draft.business_name,
-      });
+      let r: Awaited<ReturnType<typeof suggestRecruitAndKeywords>>;
+      try {
+        r = await suggestRecruitAndKeywords({
+          industryBrief: draft.industry_brief,
+          businessName: draft.business_name,
+        });
+      } catch (e) {
+        setAIError(e instanceof Error ? e.message : "AI 호출 중 오류가 발생했습니다.");
+        return;
+      }
       if (!r.ok) {
         setAIError(r.error);
         return;

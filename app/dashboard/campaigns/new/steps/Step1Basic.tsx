@@ -32,22 +32,32 @@ export function Step1Basic({
     setAiError(null);
     setTitleOptions([]);
     startTitle(async () => {
-      const r = await suggestTitles({
-        industryBrief: draft.industry_brief,
-        businessName: draft.business_name,
-      });
-      if (r.ok) setTitleOptions(r.data.titles);
-      else setAiError(r.error);
+      try {
+        const r = await suggestTitles({
+          industryBrief: draft.industry_brief,
+          businessName: draft.business_name,
+        });
+        if (r.ok) setTitleOptions(r.data.titles);
+        else setAiError(r.error);
+      } catch (e) {
+        setAiError(e instanceof Error ? e.message : "AI 호출 중 오류가 발생했습니다.");
+      }
     });
   }
 
   function runSuper() {
     setAiError(null);
     startSuper(async () => {
-      const r = await suggestEverything({
-        industryBrief: draft.industry_brief,
-        businessName: draft.business_name,
-      });
+      let r: Awaited<ReturnType<typeof suggestEverything>>;
+      try {
+        r = await suggestEverything({
+          industryBrief: draft.industry_brief,
+          businessName: draft.business_name,
+        });
+      } catch (e) {
+        setAiError(e instanceof Error ? e.message : "AI 호출 중 오류가 발생했습니다.");
+        return;
+      }
       if (!r.ok) {
         setAiError(r.error);
         return;

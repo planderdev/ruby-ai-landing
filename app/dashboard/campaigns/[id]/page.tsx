@@ -26,6 +26,10 @@ function fmtDateTime(iso: string) {
     .padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
 }
 
+// AI 인플루언서 매칭 액션은 풀 분석에 수십 초가 걸릴 수 있다.
+// Vercel 함수 기본 타임아웃(10s)에 잘리지 않도록 여유 확보.
+export const maxDuration = 60;
+
 export default async function CampaignDetailPage({
   params,
 }: {

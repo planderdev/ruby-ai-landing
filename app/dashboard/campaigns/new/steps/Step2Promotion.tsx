@@ -28,10 +28,16 @@ export function Step2Promotion({
   function runAI() {
     setAIError(null);
     startAI(async () => {
-      const r = await suggestPromotionAndChannels({
-        industryBrief: draft.industry_brief,
-        businessName: draft.business_name,
-      });
+      let r: Awaited<ReturnType<typeof suggestPromotionAndChannels>>;
+      try {
+        r = await suggestPromotionAndChannels({
+          industryBrief: draft.industry_brief,
+          businessName: draft.business_name,
+        });
+      } catch (e) {
+        setAIError(e instanceof Error ? e.message : "AI 호출 중 오류가 발생했습니다.");
+        return;
+      }
       if (!r.ok) {
         setAIError(r.error);
         return;

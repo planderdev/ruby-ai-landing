@@ -5,6 +5,10 @@ import { CampaignBuilder } from "./CampaignBuilder";
 
 export const metadata = { title: "새 캠페인 — 루비AI" };
 
+// AI 서버 액션(특히 "AI에게 전부 맡기기")은 생성에 수십 초가 걸릴 수 있다.
+// Vercel 함수 기본 타임아웃(10s)에 잘리지 않도록 여유 확보.
+export const maxDuration = 60;
+
 export default async function NewCampaignPage() {
   const profile = await getCurrentProfile();
   if (!profile) redirect("/login?redirect=/dashboard/campaigns/new");
