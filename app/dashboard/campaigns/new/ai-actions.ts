@@ -87,10 +87,10 @@ export async function suggestTitles(input: {
       type: "object",
       additionalProperties: false,
       properties: {
+        // NOTE: Anthropic 구조화 출력은 minItems/maxItems/minimum/maximum을
+        // 지원하지 않음(400). 개수·범위는 프롬프트로 지시하고 서버에서 클램핑.
         titles: {
           type: "array",
-          minItems: 3,
-          maxItems: 3,
           items: { type: "string" },
         },
       },
@@ -137,8 +137,6 @@ export async function suggestPromotionAndChannels(input: {
         category_id: { type: "string" },
         channel_type_ids: {
           type: "array",
-          minItems: 1,
-          maxItems: 4,
           items: { type: "string" },
         },
         missions: {
@@ -187,11 +185,9 @@ export async function suggestRecruitAndKeywords(input: {
       type: "object",
       additionalProperties: false,
       properties: {
-        recruit_count: { type: "integer", minimum: 1, maximum: 100 },
+        recruit_count: { type: "integer" },
         keywords: {
           type: "array",
-          minItems: 5,
-          maxItems: 8,
           items: { type: "string" },
         },
       },
@@ -230,20 +226,18 @@ export async function suggestOfferingsAndPoints(input: {
       properties: {
         offerings: {
           type: "array",
-          minItems: 1,
-          maxItems: 4,
           items: {
             type: "object",
             additionalProperties: false,
             properties: {
               title: { type: "string" },
               description: { type: "string" },
-              estimated_value: { type: "integer", minimum: 0 },
+              estimated_value: { type: "integer" },
             },
             required: ["title", "description", "estimated_value"],
           },
         },
-        point_amount: { type: "integer", minimum: 0 },
+        point_amount: { type: "integer" },
       },
       required: ["offerings", "point_amount"],
     },
@@ -274,7 +268,7 @@ export async function suggestEverything(input: {
     return { ok: false, error: "업종 설명과 상호명이 필요합니다." };
   }
 
-  return callAI<FullDraftSuggestion>({    maxTokens: 4096,
+  const r = await callAI<FullDraftSuggestion>({    maxTokens: 4096,
     userPrompt: `상호명: ${input.businessName}
 업종 설명: ${input.industryBrief}
 
@@ -301,8 +295,6 @@ export async function suggestEverything(input: {
         category_id: { type: "string" },
         channel_type_ids: {
           type: "array",
-          minItems: 1,
-          maxItems: 4,
           items: { type: "string" },
         },
         missions: {
@@ -317,29 +309,25 @@ export async function suggestEverything(input: {
             required: ["channel_type_id", "description"],
           },
         },
-        recruit_count: { type: "integer", minimum: 1, maximum: 100 },
+        recruit_count: { type: "integer" },
         keywords: {
           type: "array",
-          minItems: 5,
-          maxItems: 8,
           items: { type: "string" },
         },
         offerings: {
           type: "array",
-          minItems: 1,
-          maxItems: 4,
           items: {
             type: "object",
             additionalProperties: false,
             properties: {
               title: { type: "string" },
               description: { type: "string" },
-              estimated_value: { type: "integer", minimum: 0 },
+              estimated_value: { type: "integer" },
             },
             required: ["title", "description", "estimated_value"],
           },
         },
-        point_amount: { type: "integer", minimum: 0 },
+        point_amount: { type: "integer" },
       },
       required: [
         "title",
@@ -354,4 +342,21 @@ export async function suggestEverything(input: {
       ],
     },
   });
+  if (!r.ok) return r;
+
+  // 스키마 제약 미지원 대체: 개수·범위 서버측 클램핑
+  const d = r.data;
+  return {
+    ok: true,
+    data: {
+      ...d,
+      channel_type_ids: d.channel_type_ids.slice(0, 4),
+      recruit_count: Math.min(100, Math.max(1, d.recruit_count)),
+      keywords: d.keywords.slice(0, 8),
+      offerings: d.offerings
+        .slice(0, 4)
+        .map((o) => ({ ...o, estimated_value: Math.max(0, o.estimated_value) })),
+      point_amount: Math.max(0, d.point_amount),
+    },
+  };
 }

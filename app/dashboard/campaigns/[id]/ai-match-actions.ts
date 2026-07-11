@@ -166,15 +166,16 @@ ${influencerSummaries}
             type: "object",
             additionalProperties: false,
             properties: {
+              // minItems/maxItems/minimum/maximum은 Anthropic 구조화 출력
+              // 미지원(400) — 개수·범위는 프롬프트 + 서버 클램핑으로 처리.
               matches: {
                 type: "array",
-                maxItems: 5,
                 items: {
                   type: "object",
                   additionalProperties: false,
                   properties: {
                     influencer_id: { type: "string" },
-                    score: { type: "integer", minimum: 0, maximum: 100 },
+                    score: { type: "integer" },
                     reason: { type: "string" },
                   },
                   required: ["influencer_id", "score", "reason"],
@@ -196,9 +197,12 @@ ${influencerSummaries}
 
     // Filter out any IDs not in the eligible pool (defensive — model could hallucinate)
     const eligibleIds = new Set(eligible.map((e) => e.profile_id));
+    // 스키마 제약 미지원 대체: 점수 0~100 클램핑 + 상위 5명 제한
     const filtered = parsed.matches
       .filter((m) => eligibleIds.has(m.influencer_id))
-      .sort((a, b) => b.score - a.score);
+      .map((m) => ({ ...m, score: Math.max(0, Math.min(100, m.score)) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
 
     return { ok: true, matches: filtered };
   } catch (err) {
