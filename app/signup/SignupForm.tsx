@@ -149,6 +149,16 @@ function FormStep({
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    // 광고주는 사업자등록번호 필수 + 형식 검증 (하이픈 허용, 숫자 10자리)
+    if (role === "advertiser") {
+      const digits = businessNumber.replace(/-/g, "");
+      if (!/^\d{10}$/.test(digits)) {
+        setError("사업자등록번호는 숫자 10자리로 입력해주세요. (예: 123-45-67890)");
+        return;
+      }
+    }
+
     setLoading(true);
 
     const supabase = createClient();
@@ -161,7 +171,9 @@ function FormStep({
     };
     if (role === "advertiser") {
       metadata.company_name = companyName;
-      metadata.business_number = businessNumber;
+      // 저장은 표준 표기(000-00-00000)로 정규화
+      const d = businessNumber.replace(/-/g, "");
+      metadata.business_number = `${d.slice(0, 3)}-${d.slice(3, 5)}-${d.slice(5)}`;
     } else {
       metadata.region_id = regionId;
       metadata.channel_type_id = channelTypeId;
@@ -232,10 +244,12 @@ function FormStep({
             required
           />
           <Field
-            label="사업자등록번호 (선택)"
+            label="사업자등록번호"
             type="text"
             value={businessNumber}
             onChange={setBusinessNumber}
+            required
+            placeholder="123-45-67890"
           />
         </>
       ) : (

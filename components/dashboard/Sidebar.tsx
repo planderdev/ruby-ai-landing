@@ -31,8 +31,9 @@ const itemsByRole: Record<UserRole, NavItem[]> = {
   ],
   operator: [
     { href: "/dashboard", label: "개요", icon: LayoutDashboard },
-    { href: "/dashboard/operator/users", label: "회원 승인", icon: Users },
+    { href: "/dashboard/operator/users", label: "회원 관리", icon: Users },
     { href: "/dashboard/operator/campaigns", label: "캠페인 검수", icon: ShieldCheck },
+    { href: "/dashboard/operator/payments", label: "결제 내역", icon: CreditCard },
     { href: "/dashboard/operator/stats", label: "통계", icon: LayoutDashboard },
   ],
 };
