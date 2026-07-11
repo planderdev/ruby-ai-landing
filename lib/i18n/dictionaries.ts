@@ -17,6 +17,7 @@ const ko = {
   nav: {
     home: "루비AI 홈",
     menu: [
+      { label: "AI 기능", href: "#ai" },
       { label: "서비스", href: "#features" },
       { label: "작동 방식", href: "#how" },
       { label: "글로벌", href: "#global" },
@@ -267,6 +268,7 @@ const en: Dict = {
   nav: {
     home: "Ruby AI home",
     menu: [
+      { label: "AI", href: "#ai" },
       { label: "Product", href: "#features" },
       { label: "How it works", href: "#how" },
       { label: "Global", href: "#global" },
@@ -515,6 +517,7 @@ const zh: Dict = {
   nav: {
     home: "Ruby AI 首页",
     menu: [
+      { label: "AI 功能", href: "#ai" },
       { label: "产品", href: "#features" },
       { label: "运作方式", href: "#how" },
       { label: "全球", href: "#global" },
