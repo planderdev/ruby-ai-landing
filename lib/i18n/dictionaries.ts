@@ -231,15 +231,44 @@ const ko = {
     tagline1: "글로벌 체험단을 AI로 매칭하는 마케팅 플랫폼.",
     tagline2: "한국에서 시작해, 12개 마켓으로.",
     columns: [
-      { title: "제품", links: ["기능 소개", "요금제", "글로벌 마켓", "API 문서"] },
-      { title: "회사", links: ["루비AI 소개", "팀", "채용", "뉴스룸"] },
-      { title: "리소스", links: ["블로그", "성공 사례", "가이드북", "도움말"] },
+      {
+        title: "제품",
+        links: [
+          { label: "기능 소개", href: "#features" },
+          { label: "AI 기능", href: "#ai" },
+          { label: "요금제", href: "#pricing" },
+          { label: "글로벌 마켓", href: "#global" },
+        ],
+      },
+      {
+        title: "회사",
+        links: [
+          { label: "활용 사례", href: "#use-cases" },
+          { label: "신뢰·보안", href: "#trust" },
+          { label: "작동 방식", href: "#how" },
+          { label: "문의하기", href: "mailto:contact@plander.io" },
+        ],
+      },
+      {
+        title: "리소스",
+        links: [
+          { label: "자주 묻는 질문", href: "#faq" },
+          { label: "요금 안내", href: "#pricing" },
+          { label: "고객 지원", href: "mailto:contact@plander.io" },
+          { label: "로그인", href: "/login" },
+        ],
+      },
       {
         title: "법률",
-        links: ["이용약관", "개인정보처리방침", "광고주 약관", "인플루언서 약관"],
+        links: [
+          { label: "이용약관", href: "/terms" },
+          { label: "개인정보처리방침", href: "/privacy" },
+          { label: "광고주 약관", href: "/terms#advertiser" },
+          { label: "인플루언서 약관", href: "/terms#creator" },
+        ],
       },
     ],
-    copyright: "© 2026 루비AI. All rights reserved.",
+    copyright: "© 2026 루비AI (주식회사 플랜더). All rights reserved.",
     madeWith: "Made with care in Seoul · Tokyo · Bangkok",
   },
   comingSoon: {
@@ -482,15 +511,44 @@ const en: Dict = {
     tagline1: "The marketing platform that AI-matches global reviewers.",
     tagline2: "Started in Korea, now in 12 markets.",
     columns: [
-      { title: "Product", links: ["Features", "Pricing", "Global markets", "API docs"] },
-      { title: "Company", links: ["About Ruby AI", "Team", "Careers", "Newsroom"] },
-      { title: "Resources", links: ["Blog", "Case studies", "Guides", "Help center"] },
+      {
+        title: "Product",
+        links: [
+          { label: "Features", href: "#features" },
+          { label: "AI", href: "#ai" },
+          { label: "Pricing", href: "#pricing" },
+          { label: "Global markets", href: "#global" },
+        ],
+      },
+      {
+        title: "Company",
+        links: [
+          { label: "Use cases", href: "#use-cases" },
+          { label: "Trust & security", href: "#trust" },
+          { label: "How it works", href: "#how" },
+          { label: "Contact", href: "mailto:contact@plander.io" },
+        ],
+      },
+      {
+        title: "Resources",
+        links: [
+          { label: "FAQ", href: "#faq" },
+          { label: "Pricing", href: "#pricing" },
+          { label: "Support", href: "mailto:contact@plander.io" },
+          { label: "Log in", href: "/login" },
+        ],
+      },
       {
         title: "Legal",
-        links: ["Terms of service", "Privacy policy", "Advertiser terms", "Creator terms"],
+        links: [
+          { label: "Terms of service", href: "/terms?lang=en" },
+          { label: "Privacy policy", href: "/privacy?lang=en" },
+          { label: "Advertiser terms", href: "/terms?lang=en#advertiser" },
+          { label: "Creator terms", href: "/terms?lang=en#creator" },
+        ],
       },
     ],
-    copyright: "© 2026 Ruby AI. All rights reserved.",
+    copyright: "© 2026 Ruby AI (Plander Inc.). All rights reserved.",
     madeWith: "Made with care in Seoul · Tokyo · Bangkok",
   },
   comingSoon: {
@@ -731,15 +789,44 @@ const zh: Dict = {
     tagline1: "用 AI 匹配全球体验官的营销平台。",
     tagline2: "始于韩国，覆盖 12 个市场。",
     columns: [
-      { title: "产品", links: ["功能介绍", "价格方案", "全球市场", "API 文档"] },
-      { title: "公司", links: ["关于 Ruby AI", "团队", "招聘", "新闻室"] },
-      { title: "资源", links: ["博客", "成功案例", "指南手册", "帮助中心"] },
+      {
+        title: "产品",
+        links: [
+          { label: "功能介绍", href: "#features" },
+          { label: "AI 功能", href: "#ai" },
+          { label: "价格方案", href: "#pricing" },
+          { label: "全球市场", href: "#global" },
+        ],
+      },
+      {
+        title: "公司",
+        links: [
+          { label: "应用场景", href: "#use-cases" },
+          { label: "信任与安全", href: "#trust" },
+          { label: "运作方式", href: "#how" },
+          { label: "联系我们", href: "mailto:contact@plander.io" },
+        ],
+      },
+      {
+        title: "资源",
+        links: [
+          { label: "常见问题", href: "#faq" },
+          { label: "价格说明", href: "#pricing" },
+          { label: "客户支持", href: "mailto:contact@plander.io" },
+          { label: "登录", href: "/login" },
+        ],
+      },
       {
         title: "法律",
-        links: ["服务条款", "隐私政策", "广告主条款", "达人条款"],
+        links: [
+          { label: "服务条款", href: "/terms?lang=zh" },
+          { label: "隐私政策", href: "/privacy?lang=zh" },
+          { label: "广告主条款", href: "/terms?lang=zh#advertiser" },
+          { label: "达人条款", href: "/terms?lang=zh#creator" },
+        ],
       },
     ],
-    copyright: "© 2026 Ruby AI. 保留所有权利。",
+    copyright: "© 2026 Ruby AI (Plander Inc.). 保留所有权利。",
     madeWith: "用心打造于 首尔 · 东京 · 曼谷",
   },
   comingSoon: {

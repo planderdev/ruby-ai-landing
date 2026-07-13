@@ -46,12 +46,12 @@ export function Footer({ dict, locale }: { dict: Dict["footer"]; locale: Locale 
                 </div>
                 <ul className="mt-4 space-y-3">
                   {c.links.map((l) => (
-                    <li key={l}>
+                    <li key={l.label}>
                       <a
-                        href="#"
+                        href={l.href}
                         className="text-sm text-foreground/80 transition-colors hover:text-foreground"
                       >
-                        {l}
+                        {l.label}
                       </a>
                     </li>
                   ))}
